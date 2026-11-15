@@ -5,6 +5,7 @@
       "src/**",
       "tests/**",
       "e2e/**",
+      "worker/**",
       "*.ts",
       "*.mjs",
       "*.json",

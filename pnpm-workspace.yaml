@@ -1,0 +1,6 @@
+# Reviewed official install.js files: prepare and verify platform binaries.
+# All other dependency scripts remain unapproved; do not allow all builds.
+allowBuilds:
+  esbuild@0.28.2: true
+  workerd@1.20261110.1: true
+  workerd@1.20261113.1: true

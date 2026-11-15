@@ -3,6 +3,9 @@ node_modules/
 .next-*/
 .open-next/
 .wrangler/
+dist/
+.vite/
+.vinext/
 .env*
 !.env.example
 coverage/

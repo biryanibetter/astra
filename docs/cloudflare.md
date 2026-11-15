@@ -1,6 +1,78 @@
 # Cloudflare Workers preparation and compatibility gate
 
-## Official pathway checked on 2026-11-15
+## Website-only Cloudflare release
+
+The approved first release serves the existing website and five-step local forms
+on Workers. **It does not activate any backend operation.** `worker/index.ts`
+rejects every `/api` request and every non-GET/HEAD request before passing control
+to vinext. This gate does not depend on credentials or intake flags and never
+reads applicant request bodies. Its responses are private/no-store; it adds no
+form notices or authentication UI. Backend source, PDF validation, authentication,
+rate limits and migrations are unchanged and deferred to a separate integration.
+
+Next.js remains 16.4.2. Cloudflare builds use pinned vinext 1.4.5, Vite 8.3.8,
+Cloudflare Vite plugin 1.69.1 and Wrangler 4.162.0. No KV, R2, Images, Durable
+Object, container or other paid service is configured.
+
+### Git-connected Workers settings
+
+Use the repository root and production branch `main`:
+
+| Setting | Value |
+| --- | --- |
+| Install | `pnpm install --frozen-lockfile` (pnpm 11.5.2) |
+| Build command | `pnpm run build` |
+| Deploy command | `pnpm run deploy` |
+| Worker name | `astra` (must match the Git-connected Worker) |
+| Build output directory | Do not set `.next`; this is not a Pages static upload |
+
+The build produces `dist/server/wrangler.json` and `dist/client`. The deploy
+script explicitly uses that generated configuration. The Vite plugin also writes
+`.wrangler/deploy/config.json`, so `npx wrangler deploy` is redirected to the
+built Worker rather than `.next`. Prefer `pnpm run deploy` for the locked CLI.
+Do not run Cloudflare's automatic OpenNext conversion.
+
+`wrangler.jsonc` keeps intake/privacy/CAPTCHA flags false and routes `/api/*`
+through the Worker gate even when assets are served first. Do not add Supabase
+credentials or open intake. Domain/DNS routes are not invented in source; connect
+the actual owned domain to this Worker after the Git-connected build succeeds.
+
+### Trusted dependency scripts
+
+The supplied failure happened after the native Next build: automatic OpenNext
+installation hit pnpm's unapproved dependency scripts. `pnpm-workspace.yaml`
+approves only the reviewed official binary preparation/check scripts for:
+
+- `esbuild@0.28.2`
+- `workerd@1.20261110.1` (Vite plugin's runtime)
+- `workerd@1.20261113.1` (Wrangler's runtime)
+
+All other dependency scripts remain unapproved. No global approval or
+`dangerouslyAllowAllBuilds` is used. Updates require fresh version/script review.
+
+### Verification
+
+```sh
+pnpm install --frozen-lockfile
+pnpm typecheck
+pnpm lint
+pnpm test
+pnpm build
+pnpm test:cloudflare
+pnpm exec wrangler deploy --config dist/server/wrangler.json --dry-run
+```
+
+The Cloudflare tests run built output in workerd on desktop, tablet and mobile,
+covering routes, headers, branding, Gravity Stars/Lenis, both complete local forms
+and blocked APIs. `pnpm build:next` preserves the original Node build; `pnpm dev`
+and `pnpm start` retain their original Node behavior. Typechecking first
+regenerates native route types because vinext shares `.next/types` with Next.
+
+Local checks/dry runs do not certify a hosted deployment, free-tier CPU limits or
+domain mapping. Verify these after Git push using authenticated Cloudflare access.
+Never put credentials in source or chat.
+
+## Full-backend assessment (reference; still blocked)
 
 Cloudflare's current guide recommends **vinext** as its default Next.js-on-Workers
 path. It describes vinext as a beta Vite-based reimplementation of Next.js APIs,
@@ -19,11 +91,9 @@ Sources:
 - https://developers.cloudflare.com/cf/agents/
 - https://opennext.js.org/cloudflare
 
-**Current status:** standard Next.js build remains intact. No framework migration,
-adapter installation, Worker deployment or account changes have been performed.
-This source is not yet verified Workers-ready. A runtime migration/compatible
-version decision and its verification remain release gates; the approved
-animations must not be altered to work around platform differences.
+**Full-backend status:** the native Next.js build remains available through
+`pnpm build:next`. The website-only release above does not certify the prepared
+backend for Workers. Do not alter animations to work around platform differences.
 
 An additional concrete runtime gate is the hardened PDF validator: it uses
 terminable **Node worker threads**, which cannot be assumed available as
@@ -55,11 +125,10 @@ Hosting requires a separately approved architecture:
    on timeout, missing/invalid verdict or service outage. Never substitute a
    promise timeout around synchronous request-thread parsing.
 
-Neither option has been selected or implemented. A compatible patched Next.js/
-adapter decision (or separately tested beta vinext migration) is also still
-required for Workers. Keep the existing runtime and security checks intact while
-preparing a dedicated development Supabase project; Node production build success
-is not Workers certification.
+Neither backend option has been selected or implemented. Keep the existing
+runtime and security checks intact; Node build success is not backend Workers
+certification. The instructions below concern a future backend integration, not
+the approved website-only release above.
 
 ## Non-deploying compatibility checks
 

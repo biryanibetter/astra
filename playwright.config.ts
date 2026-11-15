@@ -4,6 +4,7 @@ const baseURL = process.env.PLAYWRIGHT_BASE_URL || "http://localhost:3107";
 const production = process.env.PLAYWRIGHT_PRODUCTION === "true";
 export default defineConfig({
   testDir: "./e2e",
+  testIgnore: "**/cloudflare-runtime.spec.ts",
   globalSetup: "./e2e/warm-dev-routes.ts",
   workers: 2,
   outputDir: ".test-output/playwright/results",

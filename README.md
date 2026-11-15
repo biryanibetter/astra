@@ -19,6 +19,8 @@ pnpm typecheck
 pnpm lint
 pnpm test
 pnpm build
+pnpm test:cloudflare
+pnpm build:next
 pnpm start
 pnpm exec playwright install chromium
 pnpm test:e2e
@@ -87,11 +89,16 @@ No repository-wide license is asserted for third-party assets.
 
 ## Deployment
 
-Do not use static export for an application requiring server submission routes.
-See [Cloudflare compatibility and deployment gates](docs/cloudflare.md). Current
-official guidance changed to vinext, and the latest OpenNext adapter does not
-support the currently pinned Next.js patch. No runtime migration or live
-deployment is claimed. Publishing source does not deploy the site or open intake.
+`pnpm build` produces the website-only Cloudflare Worker using vinext;
+`pnpm deploy` deploys its generated configuration, not `.next`. No paid bindings
+are configured. Native Node builds remain available through `pnpm build:next`.
+See [Cloudflare settings and verification](docs/cloudflare.md).
+
+The Cloudflare entry point blocks all API requests and server writes independently
+of intake flags. The original local forms and appearance are unchanged. The
+prepared backend remains in source, including isolated PDF validation, but is not
+activated on Workers. Supabase and a Cloudflare-compatible submission backend are
+separate future work. Local verification is not proof of a hosted deployment.
 
 ## Public repository release
 
