@@ -1,0 +1,3 @@
+# Next regenerates this file with platform-native line endings on Windows.
+# Normalize only this generated text file; keep real whitespace checks enabled.
+next-env.d.ts text eol=lf

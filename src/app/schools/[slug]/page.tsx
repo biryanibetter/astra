@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ScrollReveals } from "@/components/scroll-reveals";
 import { CHAPTER_STATUSES, getSchool, SCHOOLS } from "@/lib/schools";
 import "@/components/schools/school-pages.css";
 export function generateStaticParams() {
@@ -29,7 +28,6 @@ export default async function SchoolProfile({
   if (!school) notFound();
   return (
     <main id="main" className="wrap school-profile">
-      <ScrollReveals />
       <Link className="school-profile-back" href="/schools">
         ← All schools
       </Link>

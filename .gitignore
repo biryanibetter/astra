@@ -17,6 +17,8 @@ artifacts/
 .omo/
 .claude/
 .agents/
+docs/superpowers/
+docs/task64-*.md
 AGENTS.md
 CLAUDE.md
 GEMINI.md

@@ -78,6 +78,12 @@ body {
   inset: 0;
   z-index: 0;
   pointer-events: none;
+  /* A viewport-sized canvas must not invalidate the scrolling content's paint. */
+  contain: strict;
+  transform: translateZ(0);
+}
+.global-starfield canvas {
+  will-change: transform;
 }
 .site-foreground {
   position: relative;

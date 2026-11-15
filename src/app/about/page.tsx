@@ -1,11 +1,9 @@
 import type { Metadata } from "next";
-import { ScrollReveals } from "@/components/scroll-reveals";
 import { JoinLink } from "@/components/site";
 export const metadata: Metadata = { title: "About Astra" };
 export default function About() {
   return (
     <main id="main" className="content-page wrap" data-reveal-group="">
-      <ScrollReveals />
       <p className="eyebrow" data-reveal="fade-up">
         Introducing Astra
       </p>

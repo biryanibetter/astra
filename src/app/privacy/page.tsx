@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ScrollReveals } from "@/components/scroll-reveals";
 export const metadata: Metadata = {
   title: "Privacy Notice",
   robots: { index: false, follow: false },
@@ -8,7 +7,6 @@ export const metadata: Metadata = {
 export default function Privacy() {
   return (
     <main id="main" className="content-page wrap" data-reveal-group="">
-      <ScrollReveals />
       <p className="eyebrow" data-reveal="fade-up">
         Privacy & safeguarding
       </p>

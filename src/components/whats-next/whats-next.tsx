@@ -4,7 +4,6 @@ import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRef, useState } from "react";
-import { ScrollReveals } from "@/components/scroll-reveals";
 import { WordRevealHeading } from "@/components/ui/word-reveal-heading";
 import styles from "./whats-next.module.css";
 
@@ -158,7 +157,6 @@ export function WhatsNext() {
 
   return (
     <main id="main" className={`content-page wrap ${styles.page}`}>
-      <ScrollReveals />
       <header className={styles.hero}>
         <div>
           <WordRevealHeading

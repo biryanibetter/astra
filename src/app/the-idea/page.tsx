@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import ProgramsStage from "@/components/programs/programs-stage";
-import { ScrollReveals } from "@/components/scroll-reveals";
 import PhotographicGallery from "@/components/the-idea/photographic-gallery";
 import { programStockData } from "@/data/program-stock-data";
 import { astraPrograms } from "@/data/programs";
@@ -37,7 +36,6 @@ const explorationAreas = astraPrograms.map((program) => {
 export default function TheIdeaPage() {
   return (
     <div className={styles.frame} data-testid="idea-outer-frame">
-      <ScrollReveals />
       <ProgramsStage programs={explorationAreas} showSpotlightCard={false} />
       <PhotographicGallery />
     </div>

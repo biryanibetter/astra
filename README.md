@@ -29,18 +29,30 @@ credentials, real application records or CVs.
 
 ## Current application status
 
-Core and Fellow are five-step frontend forms. In this source snapshot they do
-not submit applications; the final action is unavailable. Do not describe them
-as a working live intake.
+Core and Fellow retain their original five-step local forms, including validation,
+portfolio/CV controls and Review & Finish editing. Completion stays on the review
+step and does not send data, verify email or claim receipt. Prepared backend code
+includes verified-email duplicate checks, private PDF CV handling and
+an authorized review dashboard at `/admin`. Intake fails closed without complete
+configuration, an active round, and explicit CAPTCHA/privacy/intake approval.
 
-A separate school-interest intake has a server endpoint and an existing Supabase
-migration. It remains closed without complete configuration and explicit
-privacy/intake approval. Its existing production host check is Vercel-specific;
-Cloudflare backend compatibility is not implemented in this initial snapshot.
+The source includes additive Supabase migrations and an Astra-branded email
+template for Supabase Auth with Resend custom SMTP. External services are **not
+configured or certified live**. Follow [backend setup](docs/backend-setup.md) and
+test a separate development project before enabling applications.
 
-Planned follow-on work includes private Core/Fellow persistence, verified-email
-duplicate checks using Supabase Auth, Astra-branded verification email delivered
-through Resend, private CV storage and an authorized review dashboard.
+The integrated frontend retains its single Motion runtime, shared root
+scroll-reveal ownership, native shimmer timeline and rendering/lifecycle fixes
+with this backend. The approved logo, fixed navigation, Gravity Stars, Lenis,
+application design and licensed program-image alternatives are retained.
+Styled question cards keep their native keyboard controls and full-card
+pointer/touch target. OTP controls and configuration notices are not mounted in
+the local forms. Draft answers remain in page memory only. Connecting the prepared
+backend to the frontend requires a separate, approved Supabase integration.
+
+A separate school-interest endpoint and its existing migration are retained.
+Its production host check remains Vercel-specific; do not enable that legacy
+intake on a different host without a reviewed trusted-proxy adaptation.
 
 ## Service configuration
 
@@ -51,7 +63,7 @@ Never put service-role or other secret keys in `NEXT_PUBLIC_*` variables.
 Use a separate development Supabase project and synthetic applicants for testing.
 Review migrations under `supabase/migrations` before applying them. The initial
 membership migration enables RLS and removes anonymous/authenticated table access;
-it does not provision Core/Fellow storage or an administrator dashboard.
+it is followed by the new pathway migration for Core/Fellow and private storage.
 
 The existing school intake requires a canonical `SITE_URL`, a verified
 `CONTACT_EMAIL`, server-only Supabase credentials, Turnstile configuration and a
@@ -76,6 +88,23 @@ No repository-wide license is asserted for third-party assets.
 ## Deployment
 
 Do not use static export for an application requiring server submission routes.
-Cloudflare Workers/OpenNext configuration and live integration verification are
-follow-on work, not completed deployment capabilities of this initial snapshot.
-Publishing source does not deploy the website or open intake.
+See [Cloudflare compatibility and deployment gates](docs/cloudflare.md). Current
+official guidance changed to vinext, and the latest OpenNext adapter does not
+support the currently pinned Next.js patch. No runtime migration or live
+deployment is claimed. Publishing source does not deploy the site or open intake.
+
+## Public repository release
+
+This is an independent source snapshot, not a copy of the private development
+history. Private instructions, build artifacts, credentials, browser recordings,
+real applicant records and CVs are excluded. Automated secret scans do not prove
+absolute absence of secrets.
+
+Public push is blocked by unconfirmed redistribution permissions for
+`public/media/astra-reel{,-loop,-poster,-still}.*` and
+`public/videos/video.mp4`, and unconfirmed reuse terms for
+`src/data/qatar-schools.json` (see `qatar-schools-manifest.json`, `rights`).
+These files are already present in the independent repository's initial commit;
+deleting them from the latest tree would not exclude them from a public push.
+Publication requires confirmed rights or an explicitly approved history-clean
+export excluding them. The existing history and local assets are preserved.

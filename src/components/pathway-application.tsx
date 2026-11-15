@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import {
   Activity,
   BrainCircuit,
@@ -12,6 +11,7 @@ import {
   Megaphone,
   Users,
 } from "lucide-react";
+import { motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { useSmoothScroll } from "@/components/smooth-scroll-provider";
 import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -401,6 +401,7 @@ export function PathwayApplication({
             setAttemptedStep(step);
             setInvalidAttempt((attempt) => attempt + 1);
           },
+          // Local review only: never fabricate verification or a receipt.
           onDone: () => {},
           submitting: false,
         }}

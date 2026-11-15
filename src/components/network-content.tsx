@@ -1,10 +1,8 @@
-import { ScrollReveals } from "@/components/scroll-reveals";
 import { JoinLink } from "@/components/site";
 
 export function NetworkContent() {
   return (
     <main id="main" className="content-page wrap" data-reveal-group="">
-      <ScrollReveals />
       <p className="eyebrow" data-reveal="fade-up">
         One network. Different schools.
       </p>

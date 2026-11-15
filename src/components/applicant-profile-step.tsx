@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import {
   Activity,
   BrainCircuit,
@@ -13,7 +12,7 @@ import {
   Megaphone,
   Users,
 } from "lucide-react";
-import { motion as springMotion } from "motion/react";
+import { motion } from "motion/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
@@ -350,7 +349,7 @@ export function ApplicantProfileStep({
         </div>
         <div className={`${styles.field} field ${styles.gradeField}`}>
           <div className={styles.gradeInput}>
-            <springMotion.label
+            <motion.label
               htmlFor="profile-grade"
               className={`astra-animated-label ${styles.gradeLabel}`}
               initial={false}
@@ -370,7 +369,7 @@ export function ApplicantProfileStep({
                   </span>
                 </span>
               ))}
-            </springMotion.label>
+            </motion.label>
             <Select
               value={answers.grade}
               onOpenChange={setGradeOpen}

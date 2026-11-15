@@ -4,6 +4,10 @@ const config: NextConfig = {
   // Keep production verification from replacing a running dev server's output.
   distDir: process.env.NEXT_BUILD_DIR || ".next",
   poweredByHeader: false,
+  serverExternalPackages: ["pdf-lib"],
+  outputFileTracingIncludes: {
+    "/api/pathway-applications": ["./scripts/pdf-validation-worker.mjs"],
+  },
   async headers() {
     return [
       {

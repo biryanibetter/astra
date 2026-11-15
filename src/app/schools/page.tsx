@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ScrollReveals } from "@/components/scroll-reveals";
 import { SCHOOLS } from "@/lib/schools";
 import "@/components/schools/school-pages.css";
 export const metadata: Metadata = {
@@ -16,7 +15,6 @@ const status = {
 export default function SchoolsDirectory() {
   return (
     <main id="main" className="wrap schools-page">
-      <ScrollReveals />
       <p className="eyebrow schools-kicker">SCHOOL DIRECTORY · QATAR</p>
       <h1 className="display schools-title" data-reveal="fade-up">
         Every connection starts somewhere.

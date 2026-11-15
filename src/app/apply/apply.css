@@ -462,9 +462,15 @@
   color: #fff;
 }
 .astra-multistep-form .interest-card-label input {
+  /* Keep the real control as the card's mouse/touch target and keyboard stop. */
   position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  margin: 0;
   opacity: 0;
-  pointer-events: none;
+  cursor: pointer;
 }
 .astra-multistep-form .interest-card-icon {
   display: grid;

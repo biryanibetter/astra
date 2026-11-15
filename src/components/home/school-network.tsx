@@ -1,7 +1,7 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
 import { Pencil } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ShinyButton } from "@/components/ui/shiny-button";

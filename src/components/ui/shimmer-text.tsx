@@ -1,6 +1,5 @@
 "use client";
 
-import { animate } from "motion";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import styles from "./shimmer-text.module.css";
@@ -62,7 +61,7 @@ const variantMap: Record<Variant, string> = {
   fuchsia: "text-fuchsia-600 dark:text-fuchsia-400",
 };
 
-/** 21st.dev's clipped, currentColor-backed Motion gradient, adapted for existing
+/** Clipped, currentColor-backed native gradient, adapted for existing
  * animated headings. One inherited timeline paints all fragments in heading
  * coordinates; it never owns their opacity, transforms, color, or text state. */
 export function ShimmerText({
@@ -128,15 +127,23 @@ export function ShimmerText({
     // Keep one playback clock. Offscreen custom-property writes still invalidate
     // inherited word styles/layout in GX, even though no text is visible.
     // Pause/play preserves the sweep phase and never remounts the typewriter.
-    const controls = animate(
-      element,
-      { "--shimmer-progress": [start, end] },
+    if (!element.animate) return;
+    const sweep = duration ?? (homepage ? 5.6 : 4.8);
+    const period = sweep + repeatDelay;
+    // A registered numeric property gives the browser one interpolated clock.
+    // No MotionValue subscription or inherited style write on every JS frame.
+    const controls = element.animate(
+      [
+        { "--shimmer-progress": start, offset: 0 },
+        { "--shimmer-progress": end, offset: sweep / period },
+        { "--shimmer-progress": end, offset: 1 },
+      ],
       {
-        duration: duration ?? (homepage ? 5.6 : 4.8),
-        delay,
-        repeat: Infinity,
-        repeatDelay,
-        ease: "linear",
+        duration: period * 1000,
+        delay: delay * 1000,
+        iterations: Infinity,
+        easing: "linear",
+        fill: "both",
       },
     );
     let visible = typeof IntersectionObserver === "undefined";
@@ -159,7 +166,7 @@ export function ShimmerText({
     return () => {
       observer?.disconnect();
       document.removeEventListener("visibilitychange", sync);
-      controls.stop();
+      controls.cancel();
     };
   }, [ready, start, end, duration, homepage, delay, repeatDelay]);
 

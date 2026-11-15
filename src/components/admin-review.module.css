@@ -1,0 +1,107 @@
+.page {
+  position: relative;
+  max-width: 1400px;
+  margin: 120px auto 48px;
+  padding: 24px;
+  color: #f5f6f8;
+  background: #080b11;
+  border: 1px solid #303642;
+  border-radius: 12px;
+}
+.page h1 {
+  font-size: clamp(24px, 4vw, 36px);
+  margin-bottom: 16px;
+}
+.page h2 {
+  font-size: 22px;
+  margin: 24px 0 12px;
+}
+.page label {
+  display: grid;
+  gap: 6px;
+  color: #d9dee7;
+}
+.page input,
+.page select,
+.page textarea {
+  color: #f5f6f8;
+  background: #111722;
+  border: 1px solid #596273;
+  border-radius: 5px;
+  min-height: 44px;
+  padding: 10px;
+  width: 100%;
+}
+.page button,
+.page a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 14px;
+  border: 1px solid #596273;
+  border-radius: 5px;
+  color: #d8e5ff;
+  background: #151e2d;
+  text-decoration: none;
+}
+.page button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.page :focus-visible {
+  outline: 2px solid #9cbdff;
+  outline-offset: 3px;
+}
+.toolbar {
+  display: flex;
+  gap: 12px;
+  align-items: end;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
+.toolbar label {
+  flex: 1 1 150px;
+}
+.login {
+  display: grid;
+  gap: 18px;
+  max-width: 420px;
+  margin: 0 auto;
+}
+.scroll {
+  overflow-x: auto;
+}
+.page table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 820px;
+}
+.page th,
+.page td {
+  padding: 12px;
+  border-bottom: 1px solid #303642;
+  text-align: left;
+  vertical-align: top;
+}
+.page th {
+  color: #aab1bc;
+  font-weight: 500;
+}
+.page caption {
+  text-align: left;
+  padding: 10px 0;
+}
+.detail {
+  border-top: 1px solid #596273;
+  margin-top: 24px;
+  padding-top: 16px;
+}
+.detail p,
+.detail pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-width: 78ch;
+}
+.detail article {
+  margin-bottom: 18px;
+}

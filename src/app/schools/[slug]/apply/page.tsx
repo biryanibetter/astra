@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SchoolApplication } from "@/components/schools/school-application";
-import { ScrollReveals } from "@/components/scroll-reveals";
 import "@/components/schools/school-pages.css";
 import { getSchool } from "@/lib/schools";
 import { applicationConfiguration } from "@/lib/server/config";
@@ -25,7 +24,6 @@ export default async function SchoolApply({
   const intent = query.intent === "founding" ? "founding" : "interest";
   return (
     <main id="main" className="wrap school-form-page">
-      <ScrollReveals />
       <Link className="school-profile-back" href={`/schools/${school.slug}`}>
         ← {school.name}
       </Link>

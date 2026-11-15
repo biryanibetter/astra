@@ -1,10 +1,8 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRight, FileText, Pencil } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import { useReducedMotion } from "@/lib/motion-preference";
-import { installScrollReveals } from "@/lib/scroll-reveal";
 import type { Pathway } from "./pathway-questions";
 import { pathwayQuestions } from "./pathway-questions";
 import type { PortfolioData } from "./portfolio-builder";
@@ -122,10 +120,6 @@ export function ReviewStep({
   portfolio,
   onEdit,
 }: ReviewStepProps) {
-  const reviewRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (reviewRef.current) return installScrollReveals(reviewRef.current);
-  }, []);
   const reduceMotion = useReducedMotion() ?? false;
   const questions = pathwayQuestions[track].questions;
   const questionFor = (index: number) => questions[index];
@@ -177,7 +171,6 @@ export function ReviewStep({
 
   return (
     <motion.div
-      ref={reviewRef}
       className={styles.review}
       initial={reduceMotion ? false : { opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}

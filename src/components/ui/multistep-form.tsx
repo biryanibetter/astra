@@ -1,7 +1,7 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
 import { Check, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { useSmoothScroll } from "@/components/smooth-scroll-provider";
@@ -82,8 +82,6 @@ export interface ApplicationSteps {
   canProceed: (step: number) => boolean;
   onNext: (step: number) => Promise<boolean>;
   onDone: () => void | Promise<void>;
-  /** Explicit opt-in after a real submission endpoint is available. */
-  doneAvailable?: boolean;
   onInvalid?: (step: number) => void;
   submitting: boolean;
 }
@@ -961,19 +959,7 @@ const OnboardingForm = ({
                   disabled={
                     (!application && !isStepValid()) ||
                     isSubmitting ||
-                    Boolean(application?.submitting) ||
-                    Boolean(
-                      application &&
-                        currentStep === displayedSteps.length - 1 &&
-                        !application.doneAvailable,
-                    )
-                  }
-                  aria-describedby={
-                    application &&
-                    currentStep === displayedSteps.length - 1 &&
-                    !application.doneAvailable
-                      ? "application-done-unavailable"
-                      : undefined
+                    Boolean(application?.submitting)
                   }
                   className={cn(
                     "flex items-center gap-1 transition-all duration-300 rounded-2xl",
@@ -1003,17 +989,6 @@ const OnboardingForm = ({
                   )}
                 </ShinyActionOrButton>
               </motion.div>
-              {application &&
-              currentStep === displayedSteps.length - 1 &&
-              !application.doneAvailable ? (
-                <p
-                  id="application-done-unavailable"
-                  className="application-done-unavailable"
-                  role="status"
-                >
-                  Submissions aren’t open yet. Your answers remain on this page.
-                </p>
-              ) : null}
             </CardFooter>
           </div>
         </Card>

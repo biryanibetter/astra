@@ -19,42 +19,33 @@ export function useCinematicDepth(
     gsap.registerPlugin(ScrollTrigger);
     const context = gsap.context(() => {
       const trigger = kind === "artwork" ? element.closest(".hero") : element;
-      const media = gsap.matchMedia();
       if (kind === "artwork") {
         const subject = element.querySelector(".creation-subject-depth");
         const field = element.querySelector(".creation-atmosphere");
-        media.add(
-          {
-            desktop: "(min-width: 701px)",
-            mobile: "(max-width: 700px)",
-          },
-          (match) => {
-            const distance = match.conditions?.mobile ? 24 : 34;
-            const duration = match.conditions?.mobile ? 320 : 320;
-            const scrollTrigger = {
-              trigger,
-              start: "top top",
-              end: `+=${duration}`,
-              scrub: 0.8,
-              invalidateOnRefresh: true,
-            };
-            if (subject)
-              gsap.to(subject, {
-                y: distance,
-                force3D: false,
-                ease: "none",
-                scrollTrigger,
-              });
-            if (field)
-              gsap.to(field, {
-                y: -14,
-                force3D: false,
-                ease: "none",
-                scrollTrigger,
-              });
-          },
-        );
-        return () => media.revert();
+        const scrollTrigger = {
+          trigger,
+          start: "top top",
+          end: "+=320",
+          scrub: 0.8,
+          invalidateOnRefresh: true,
+        };
+        // Responsive values already refresh on resize. No per-mount
+        // matchMedia registrations (GSAP retains their native listeners).
+        if (subject)
+          gsap.to(subject, {
+            y: () => (window.innerWidth <= 700 ? 24 : 34),
+            force3D: false,
+            ease: "none",
+            scrollTrigger,
+          });
+        if (field)
+          gsap.to(field, {
+            y: -14,
+            force3D: false,
+            ease: "none",
+            scrollTrigger,
+          });
+        return;
       }
       gsap.fromTo(
         element,

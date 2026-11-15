@@ -1,0 +1,12 @@
+Astra Youth Innovation Network
+
+Verify your email to continue your Astra application.
+
+Your one-time code: {{ .Token }}
+
+Enter this code on the application page you already have open.
+It expires shortly and can be used only once. Request another if needed.
+
+Never share this code. Astra will not ask you to send it by email or message.
+If you did not request it, ignore this email.
+Receiving a code does not mean an application has been submitted or accepted.

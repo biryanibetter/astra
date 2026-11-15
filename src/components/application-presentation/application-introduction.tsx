@@ -1,11 +1,10 @@
 "use client";
 
-import { AnimatePresence, motion, useInView } from "framer-motion";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { AnimatePresence, motion, useInView } from "motion/react";
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ShinyAction } from "@/components/ui/shiny-button";
-import { installScrollReveals } from "@/lib/scroll-reveal";
 import { useSystemReducedMotion } from "@/lib/system-motion-preference";
 import styles from "./application-presentation.module.css";
 
@@ -96,7 +95,6 @@ export function ApplicationIntroduction({
   const [pageVisible, setPageVisible] = useState(true);
   const [mounted, setMounted] = useState(false);
   const carouselRef = useRef<HTMLElement>(null);
-  const surfaceRef = useRef<HTMLElement>(null);
   const timerRef = useRef<number>(0);
   const transitionRef = useRef(false);
   const inView = useInView(carouselRef, { amount: 0.35 });
@@ -110,7 +108,6 @@ export function ApplicationIntroduction({
 
   useEffect(() => {
     setMounted(true);
-    if (surfaceRef.current) return installScrollReveals(surfaceRef.current);
   }, []);
 
   useEffect(() => {
@@ -146,7 +143,6 @@ export function ApplicationIntroduction({
 
   return (
     <section
-      ref={surfaceRef}
       className={`${styles.introduction} application-intro-surface`}
       aria-labelledby="application-intro-title"
     >
