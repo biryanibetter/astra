@@ -1,0 +1,157 @@
+.marquee-logo-scroller {
+  --brand-gap: clamp(80px, 7vw, 120px);
+  position: relative;
+  z-index: 6;
+  width: 100%;
+  height: clamp(120px, 12svh, 192px);
+  margin-top: calc(clamp(120px, 12svh, 192px) * -0.5);
+  margin-bottom: calc(clamp(120px, 12svh, 192px) * -0.2);
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    radial-gradient(ellipse at 50% 48%, rgb(24 24 24 / 27%), transparent 68%),
+    linear-gradient(180deg, transparent, #000 48%);
+  mask-image: linear-gradient(transparent, #000 20% 82%, transparent);
+}
+
+.orbital-ribbon-paths {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: #c6ccd53d;
+  stroke-width: 0.7;
+  pointer-events: none;
+  mask-image: linear-gradient(90deg, transparent, #000 24% 76%, transparent);
+}
+
+.orbital-path-faint {
+  opacity: 0.3;
+}
+.orbital-path-lower {
+  opacity: 0.45;
+}
+
+.orbital-field {
+  position: absolute;
+  inset: 6% 15%;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse at 50% 50%,
+      rgb(var(--light-rgb) / 3%),
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse at 50% 66%,
+      rgb(var(--shade-rgb) / 2%),
+      transparent 70%
+    );
+}
+
+.marquee-logo-viewport {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, #000 9% 91%, transparent);
+}
+
+.marquee-logo-track {
+  position: relative;
+  display: flex;
+  width: max-content;
+  height: 100%;
+  align-items: center;
+  will-change: transform;
+}
+
+.marquee-logo-group {
+  display: flex;
+  flex: none;
+  width: max-content;
+  gap: var(--brand-gap);
+  padding-right: var(--brand-gap);
+  align-items: center;
+}
+
+.orbital-brand {
+  --focus: 0;
+  position: relative;
+  display: grid;
+  width: max-content;
+  height: clamp(72px, 7vh, 88px);
+  flex: none;
+  place-items: center;
+  color: #f5f6f8;
+}
+
+.orbital-brand-art {
+  display: flex;
+  flex: none;
+  white-space: nowrap;
+  align-items: center;
+  gap: 12px;
+  opacity: calc(0.34 + var(--focus) * 0.66);
+  transition: opacity 240ms ease;
+  transform: translate3d(0, calc(var(--focus) * -3px), 0)
+    scale(calc(1 + var(--focus) * 0.12));
+}
+
+.orbital-brand-art svg {
+  width: clamp(24px, 2.5vw, 30px);
+  height: clamp(24px, 2.5vw, 30px);
+  flex: none;
+}
+
+.orbital-brand-art > span {
+  font-size: clamp(14px, 1.5vw, 17px);
+  font-weight: 500;
+  letter-spacing: -0.6px;
+  white-space: nowrap;
+}
+
+.orbital-brand-wash {
+  position: absolute;
+  inset: -8px 5px;
+  background: radial-gradient(
+    ellipse,
+    rgb(var(--light-rgb) / 6%),
+    transparent 68%
+  );
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+@media (hover: hover) {
+  .orbital-brand:hover .orbital-brand-art {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 700px) {
+  .marquee-logo-scroller {
+    --brand-gap: 64px;
+    height: clamp(100px, 14svh, 148px);
+    margin-top: calc(clamp(100px, 14svh, 148px) * -0.5);
+    margin-bottom: calc(clamp(100px, 14svh, 148px) * -0.2);
+  }
+
+  .orbital-brand {
+    height: clamp(60px, 8svh, 72px);
+  }
+  .orbital-brand-art {
+    gap: 8px;
+  }
+  .orbital-brand-art svg {
+    width: clamp(22px, 3vw, 27px);
+    height: clamp(22px, 3vw, 27px);
+  }
+  .orbital-brand-art > span {
+    font-size: clamp(13px, 2vw, 16px);
+  }
+  .orbital-field {
+    inset-inline: 0;
+  }
+}

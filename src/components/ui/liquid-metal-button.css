@@ -1,0 +1,143 @@
+.liquid-metal-button {
+  --metal-line: #34383e;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-width: 0;
+  border: 1px solid var(--metal-line);
+  border-radius: 5px;
+  background: #0c0d0f;
+  color: #e9ebee;
+  box-shadow: 0 0 0 0 #fff0;
+  transition:
+    transform 320ms ease,
+    border-color 320ms ease,
+    background-color 320ms ease,
+    box-shadow 320ms ease;
+}
+.liquid-metal-button:hover,
+.liquid-metal-button:focus-visible {
+  transform: translateY(-2px);
+  border-color: #737b86;
+  box-shadow: 0 10px 24px #0006;
+}
+.liquid-metal-button.network-pathway[data-pressed="true"] {
+  transform: translateY(1px) scale(0.985);
+  border-color: #c3c9d1;
+  box-shadow:
+    inset 0 1px 4px #0009,
+    0 2px 8px #0008;
+}
+.liquid-metal-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  align-items: center;
+  gap: 17px;
+}
+.liquid-metal-border {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0.17;
+  transition: opacity 400ms;
+}
+.liquid-metal-button:hover .liquid-metal-border,
+.liquid-metal-button:focus-visible .liquid-metal-border {
+  opacity: 0.48;
+}
+.liquid-metal-button[data-liquid-active="true"] .liquid-metal-border,
+.liquid-metal-button[data-pressed="true"] .liquid-metal-border {
+  opacity: 0.92;
+}
+.liquid-metal-shader {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 0.78;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  padding: 1px;
+}
+.liquid-metal-shader canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.liquid-metal-border::after {
+  position: absolute;
+  inset: 0;
+  border: 1px solid transparent;
+  background: linear-gradient(
+      112deg,
+      transparent 26%,
+      #cbd0d8 47%,
+      #f1f2f4 51%,
+      #8a919b 55%,
+      transparent 76%
+    )
+    border-box;
+  background-size: 220% 100%;
+  content: "";
+  opacity: 0;
+  pointer-events: none;
+  -webkit-mask:
+    linear-gradient(#000 0 0) padding-box,
+    linear-gradient(#000 0 0);
+  mask:
+    linear-gradient(#000 0 0) padding-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  transition: opacity 180ms ease;
+}
+.liquid-metal-button[data-shader-state="fallback"] .liquid-metal-border::after {
+  opacity: 0.58;
+}
+.liquid-metal-button[data-shader-state="fallback"][data-ripple-active="true"]
+  .liquid-metal-border::after {
+  opacity: 0.95;
+  animation: liquid-metal-sweep 620ms ease-out;
+}
+.liquid-metal-ripple {
+  position: absolute;
+  z-index: 0;
+  left: var(--press-x, 50%);
+  top: var(--press-y, 50%);
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, #d9dde530, transparent 70%);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.liquid-metal-button[data-ripple-active="true"] .liquid-metal-ripple {
+  animation: liquid-ripple 620ms ease-out;
+}
+@keyframes liquid-ripple {
+  to {
+    width: 380px;
+    height: 380px;
+    opacity: 0;
+  }
+}
+@keyframes liquid-metal-sweep {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}

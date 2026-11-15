@@ -1,0 +1,210 @@
+@property --shiny-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.shiny-button {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid #3a424d;
+  border-radius: 5px;
+  background: linear-gradient(165deg, #11151c 0%, #08090c 58%, #11151c 100%);
+  color: #f7f9fc;
+  box-shadow:
+    inset 0 1px #ffffff0c,
+    0 0 0 0 #fff0;
+  transition:
+    box-shadow 240ms ease,
+    background-color 240ms ease,
+    transform 180ms ease-out;
+}
+
+/* Network-card material; shared verbatim with the application action. */
+.shiny-button.astra-card-glass {
+  border: 1px solid #30343a;
+  background: #0c0d0f;
+  color: #e9ebee;
+  box-shadow: 0 0 0 0 #ffffff00;
+}
+.astra-card-glass::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    115deg,
+    #ffffff0d 0%,
+    #ffffff04 34%,
+    transparent 64%
+  );
+  transition: opacity 320ms ease;
+}
+.astra-card-glass:is(:hover, :focus-visible):not(:disabled)::before {
+  opacity: 1;
+}
+.astra-card-glass:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.astra-card-glass:disabled > :not(.shiny-button-content) {
+  animation-play-state: paused;
+}
+
+.shiny-button:is(:hover, :focus-visible) {
+  box-shadow:
+    inset 0 1px #ffffff20,
+    0 0 8px #ced6e01c;
+}
+
+.shiny-button-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 17px;
+  width: 100%;
+  min-width: 0;
+}
+
+.shiny-button-border,
+.shiny-button-glimmer,
+.shiny-button-ripple {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.shiny-button-border {
+  z-index: 1;
+  opacity: 0.64;
+  transition:
+    opacity 220ms ease,
+    filter 220ms ease;
+}
+
+.shiny-button-border::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  padding: 2px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--shiny-angle) at 50% 50%,
+    #8792a2 0deg,
+    #11151c 50deg,
+    #08090c 95deg,
+    #39424e 136deg,
+    #ced6e0 160deg,
+    #f7f9fc 177deg,
+    #ced6e0 192deg,
+    #56616f 220deg,
+    #08090c 285deg,
+    #8792a2 360deg
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: shiny-border-turn 5s linear infinite;
+}
+
+.shiny-button:is(:hover, :focus-visible) .shiny-button-border,
+.shiny-button[data-shiny-pressed="true"] .shiny-button-border {
+  opacity: 1;
+  filter: drop-shadow(0 0 2px #ced6e066);
+}
+
+.shiny-button:is(:hover, :focus-visible) .shiny-button-border::before {
+  animation-duration: 1.7s;
+}
+
+.shiny-button[data-shiny-pressed="true"] .shiny-button-border::before {
+  animation-play-state: paused;
+}
+
+.shiny-button-glimmer {
+  z-index: 0;
+  background: linear-gradient(
+    110deg,
+    transparent 24%,
+    #8792a216 42%,
+    #ced6e038 49%,
+    #8792a21c 54%,
+    transparent 72%
+  );
+  background-size: 250% 100%;
+  background-position: 120% 0;
+  opacity: 0.38;
+  animation: shiny-sweep 5s ease-in-out infinite;
+}
+
+.shiny-button:is(:hover, :focus-visible) .shiny-button-glimmer,
+.shiny-button[data-shiny-pressed="true"] .shiny-button-glimmer {
+  opacity: 0.72;
+}
+
+.shiny-button[data-shiny-pressed="true"] {
+  transform: scale(0.985);
+  box-shadow:
+    inset 0 1px #ffffff28,
+    0 0 10px #ced6e026;
+}
+
+.shiny-button[data-shiny-pressed="true"] .shiny-button-glimmer {
+  animation-play-state: paused;
+}
+
+.shiny-button-ripple {
+  z-index: 1;
+  opacity: 0;
+  background: radial-gradient(
+    circle at var(--shiny-x, 50%) var(--shiny-y, 50%),
+    #f7f9fc40 0%,
+    #ced6e024 18%,
+    transparent 50%
+  );
+}
+
+.shiny-button[data-shiny-pressed="true"] .shiny-button-ripple {
+  animation: shiny-ripple 360ms ease-out both;
+}
+
+@keyframes shiny-border-turn {
+  to {
+    --shiny-angle: 360deg;
+  }
+}
+
+@keyframes shiny-sweep {
+  0%,
+  18% {
+    background-position: 120% 0;
+  }
+  75%,
+  100% {
+    background-position: -20% 0;
+  }
+}
+
+@keyframes shiny-ripple {
+  0% {
+    opacity: 0;
+    transform: scale(0.75);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.12);
+  }
+}

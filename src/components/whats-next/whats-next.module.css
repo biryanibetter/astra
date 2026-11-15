@@ -1,0 +1,481 @@
+.page {
+  max-width: var(--container-max);
+  padding-top: 140px;
+  padding-bottom: 6rem;
+}
+
+.hero {
+  margin-bottom: 60px;
+}
+
+.heroTitle {
+  max-width: 850px;
+  font-size: clamp(48px, 6vw, 86px);
+  line-height: 0.96;
+  letter-spacing: -0.035em;
+  margin-top: 0;
+}
+
+.heroTitle [data-muted="true"] {
+  color: #888a8f;
+}
+
+.timeline {
+  position: relative;
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(30px, 5vw, 72px);
+}
+
+.rail {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 0 4px;
+  overflow: visible;
+  overscroll-behavior-inline: contain;
+  scroll-snap-type: inline mandatory;
+  margin: 0;
+  scrollbar-width: none;
+}
+
+.tab {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  flex: 0 0 auto;
+  width: 68px;
+  min-width: 68px;
+  padding: 12px 10px;
+  color: #969ba4;
+  text-align: center;
+  background: #0b0c0e;
+  border: 1px solid #ffffff20;
+  border-radius: 999px;
+  cursor: pointer;
+  font: inherit;
+  transition:
+    color 0.25s ease,
+    background 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.25s ease;
+  scroll-snap-align: center;
+}
+
+.tab:hover:not(.selected) {
+  color: #e3e6ea;
+  background: #ffffff08;
+  border-color: #aeb3bb80;
+}
+
+.selected {
+  color: #111216;
+  background: #f4f4f2;
+  border-color: #f4f4f2;
+  transform: translateY(-2px);
+}
+
+.tab:focus-visible {
+  outline: 2px solid #dce0e5;
+  outline-offset: 3px;
+}
+
+.tabNumber {
+  color: #c7cbd1;
+  font:
+    600 14px / 1 ui-monospace,
+    monospace;
+  letter-spacing: 0.08em;
+}
+
+.selected .tabNumber {
+  color: #111216;
+}
+
+.tabTitle {
+  display: none;
+}
+
+.feature {
+  min-width: 0;
+}
+
+.panel {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(360px, 1.05fr);
+  align-items: center;
+  gap: clamp(32px, 5vw, 64px);
+  min-height: 370px;
+}
+
+.copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.largeNumber {
+  color: #e6e7ea;
+  font-family: inherit;
+  font-weight: 620;
+  font-size: clamp(96px, 10vw, 160px);
+  line-height: 0.84;
+  letter-spacing: -0.095em;
+  margin-bottom: 12px;
+}
+
+.copy h2 {
+  margin: 0 0 16px;
+  font-size: clamp(26px, 2.6vw, 38px);
+  line-height: 1.04;
+  letter-spacing: -0.04em;
+}
+
+.copy p {
+  margin: 0;
+  max-width: 520px;
+  color: #b5bac4;
+  font-size: clamp(15px, 1.8vw, 18px);
+  line-height: 1.8;
+}
+
+.note {
+  margin-top: 24px;
+  color: #858b96;
+  font:
+    10px / 1.5 ui-monospace,
+    monospace;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.photoWrapper {
+  position: relative;
+  border: 1px solid #ffffff28;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #0b0c0e;
+}
+
+.photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
+  object-fit: cover;
+  transition: opacity 0.4s ease;
+}
+
+.cards {
+  margin-top: clamp(80px, 10vw, 140px);
+}
+
+.cardsHeading {
+  margin-bottom: 24px;
+}
+
+.cardsHeading h2 {
+  max-width: 900px;
+  font-size: clamp(32px, 3.5vw, 48px);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+}
+
+.cardsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: clamp(420px, 36vw, 520px);
+  overflow: hidden;
+  padding: 0;
+  color: white;
+  text-align: left;
+  background: #101216;
+  border: 1px solid #ffffff24;
+  border-radius: 8px;
+  cursor: pointer;
+  font: inherit;
+  isolation: isolate;
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.card:hover {
+  border-color: #c6ccd560;
+  box-shadow:
+    0 20px 40px -12px rgba(0, 0, 0, 0.5),
+    0 0 0 1px #c6ccd540,
+    0 0 40px rgba(198, 204, 213, 0.1);
+}
+
+.card:focus-visible {
+  outline: 2px solid #dce0e5;
+  outline-offset: 3px;
+}
+
+.cardImage {
+  position: absolute;
+  z-index: -2;
+  inset: 0;
+  display: block;
+}
+
+.cardImage::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background: linear-gradient(
+    180deg,
+    #07090b08 10%,
+    #080a0c45 42%,
+    #080a0cf2 100%
+  );
+}
+
+.cardImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.7s ease;
+}
+
+.card:hover .cardImage img {
+  transform: scale(1.045);
+}
+
+.cardCopy {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 20px;
+  z-index: 1;
+  min-height: 180px;
+}
+
+.cardCopy > span:first-child {
+  color: #d2d5d9;
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+}
+
+.cardCopy i {
+  padding: 0 0.3rem;
+  color: #c1c5cb;
+  font-style: normal;
+}
+
+.cardCopy strong {
+  margin: 10px 0 6px;
+  font-size: clamp(1.15rem, 1.5vw, 1.5rem);
+  line-height: 1.15;
+}
+
+.cardCopy .description,
+.cardCopy .detail {
+  color: #d0d3d8;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+.cardCopy .detail {
+  margin-top: 8px;
+  color: #fff;
+}
+
+.discover {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  color: #fff;
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.outro {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: var(--container-max);
+  margin: 3rem auto 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid #ffffff25;
+}
+
+.outro p {
+  color: #d3d5da;
+}
+
+@keyframes arrive {
+  from {
+    opacity: 0.35;
+    transform: translateY(7px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 1100px) {
+  .panel {
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 1fr);
+    gap: clamp(24px, 4vw, 40px);
+    min-height: 400px;
+  }
+  .largeNumber {
+    font-size: clamp(80px, 9vw, 130px);
+  }
+  .copy h2 {
+    font-size: clamp(26px, 2.8vw, 38px);
+  }
+  .copy p {
+    font-size: 15px;
+  }
+  .photo {
+    min-height: 400px;
+  }
+}
+
+@media (max-width: 900px) {
+  .cardsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .card {
+    height: clamp(380px, 40vw, 460px);
+  }
+}
+
+@media (max-width: 700px) {
+  .timeline {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+  }
+  .page {
+    padding-top: 140px;
+    padding-bottom: 4rem;
+  }
+
+  .heroTitle {
+    font-size: clamp(40px, 11vw, 64px);
+  }
+
+  .hero {
+    margin-bottom: 48px;
+  }
+
+  .rail {
+    flex-direction: row;
+    gap: 12px;
+    padding: 8px 4px 12px;
+    margin-bottom: 24px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+  }
+
+  .tab {
+    width: 56px;
+    min-width: 56px;
+    justify-content: center;
+    padding: 12px 10px;
+  }
+
+  .tabNumber {
+    font-size: 12px;
+  }
+
+  .panel {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    min-height: 0;
+  }
+
+  .copy {
+    text-align: center;
+    align-items: center;
+  }
+
+  .largeNumber {
+    font-size: clamp(72px, 18vw, 120px);
+    margin-bottom: 8px;
+  }
+
+  .copy h2 {
+    font-size: clamp(24px, 6vw, 34px);
+    margin-bottom: 12px;
+  }
+
+  .copy p {
+    max-width: 100%;
+    font-size: 15px;
+    text-align: center;
+  }
+
+  .note {
+    margin-top: 18px;
+  }
+
+  .photoWrapper {
+    border-radius: 10px;
+  }
+
+  .photo {
+    min-height: 300px;
+    max-height: 50svh;
+  }
+
+  .cards {
+    margin-top: 60px;
+  }
+
+  .cardsGrid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .card {
+    height: 420px;
+    min-height: 390px;
+  }
+
+  .cardCopy {
+    padding: 18px;
+  }
+
+  .cardCopy strong {
+    font-size: 1.3rem;
+  }
+
+  .outro {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .largeNumber {
+    font-size: clamp(56px, 20vw, 88px);
+  }
+
+  .copy h2 {
+    font-size: 22px;
+  }
+}

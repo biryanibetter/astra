@@ -1,0 +1,63 @@
+/* biome-ignore-all lint/correctness/noUnknownPseudoClass: Next CSS Modules supports :global for route-scoped stage selectors. */
+.frame {
+  position: relative;
+  z-index: 1;
+  width: calc(100% - 2 * var(--container-padding));
+  max-width: var(--container-max);
+  margin: clamp(156px, 17svh, 200px) auto 80px;
+  /* Replace the old border's inset so the approved content edges do not move. */
+  padding: calc(clamp(24px, 3vw, 32px) + 1px);
+  border-radius: 8px;
+  color: var(--text-primary);
+}
+
+/* The stage retains its native-scroll plateau and chapter controller, but its
+   geometry follows the same bounded column as the homepage's experiences. */
+.frame :global([data-programs-stage]) {
+  padding-top: 0;
+}
+
+.frame :global([data-programs-stage])::after {
+  height: 60px;
+}
+
+.frame :global([data-programs-composition]) {
+  width: 100%;
+  min-height: 0;
+  margin-inline: auto;
+}
+
+.frame :global([data-programs-stage]) :global([data-programs-composition]) {
+  height: max(440px, calc(100svh - 198px));
+  max-height: none;
+}
+
+.frame :global([data-programs-gallery]) {
+  border-radius: 8px;
+}
+
+.frame :global([data-programs-stage]) :global([data-programs-composition]) h1 {
+  max-width: 100%;
+}
+
+.frame :global(main) {
+  padding-bottom: 0;
+}
+
+@media (max-width: 900px) {
+  .frame :global([data-programs-stage]) :global([data-programs-composition]) {
+    height: max(540px, calc(100svh - 198px));
+  }
+}
+
+@media (max-width: 560px) {
+  .frame {
+    width: calc(100% - 2 * var(--container-padding-mobile));
+    margin-top: 150px;
+    padding: 13px;
+  }
+
+  .frame :global([data-programs-stage]) :global([data-programs-composition]) {
+    height: max(530px, calc(100svh - 198px));
+  }
+}

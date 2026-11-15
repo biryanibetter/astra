@@ -1,0 +1,552 @@
+.review {
+  --review-muted: #aeb6c1;
+  --review-line: rgba(220, 226, 234, 0.18);
+  display: grid;
+  gap: clamp(26px, 4vw, 44px);
+  padding: clamp(24px, 5vw, 56px);
+  color: #f4f6f8;
+}
+
+.overview {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(200px, 240px);
+  align-items: center;
+  gap: 32px;
+  padding: clamp(26px, 4vw, 44px);
+  border: 1px solid rgba(220, 226, 234, 0.22);
+  border-radius: 16px;
+  background:
+    radial-gradient(ellipse at 4% 0%, rgba(220, 226, 234, 0.1), transparent 46%),
+    linear-gradient(120deg, rgba(255, 255, 255, 0.035), rgba(0, 0, 0, 0.94) 72%);
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.08),
+    0 24px 72px rgba(0, 0, 0, 0.38);
+}
+
+.overviewIdentity {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 22px;
+}
+.avatar {
+  display: grid;
+  width: 68px;
+  height: 68px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid rgba(233, 237, 243, 0.56);
+  background: linear-gradient(145deg, #dbe0e7, #919aa7);
+  color: #111418;
+  font-size: 20px;
+  font-weight: 650;
+  letter-spacing: -0.04em;
+}
+.overviewCopy {
+  min-width: 0;
+}
+.overviewEyebrow {
+  margin: 0 0 10px;
+  color: #c6ccd5;
+  font: 600 11px / 1.4 var(--font-mono, monospace);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.overviewCopy h2 {
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: #f7f8fa;
+  font-size: clamp(30px, 4vw, 46px);
+  font-weight: 540;
+  letter-spacing: -0.055em;
+  line-height: 1.06;
+  text-wrap: balance;
+}
+.trackName {
+  margin: 11px 0 0;
+  color: var(--review-muted);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.completeness {
+  min-width: 0;
+  padding: 4px 0 4px 22px;
+  border-left: 1px solid var(--review-line);
+}
+.completenessTop {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+}
+.completenessValue {
+  color: #f5f7f9;
+  font-size: 34px;
+  font-weight: 540;
+  letter-spacing: -0.06em;
+  font-variant-numeric: tabular-nums;
+}
+.completenessLabel,
+.completeness > p {
+  color: var(--review-muted);
+  font-size: 14px;
+}
+.completeness > p {
+  margin: 10px 0 0;
+}
+.progressTrack {
+  height: 3px;
+  margin-top: 12px;
+  overflow: hidden;
+  background: rgba(220, 226, 234, 0.2);
+}
+.progressTrack span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #aeb7c3, #f4f6f8);
+  transition: width 240ms ease-out;
+}
+
+/* Rounded section containers replace the previous straight divider list so
+   every review region reads as part of the same card family as the overview. */
+.sections {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  gap: 14px;
+}
+.section {
+  min-width: 0;
+  padding: 18px 20px;
+  border: 1px solid rgba(220, 226, 234, 0.16);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  box-shadow: none;
+  backdrop-filter: none;
+}
+.sectionHeader {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 14px;
+}
+.sectionHeader h3 {
+  min-width: 0;
+  margin: 0;
+  color: #f2f4f7;
+  font-size: clamp(19px, 2vw, 21px);
+  font-weight: 540;
+  letter-spacing: -0.025em;
+  line-height: 1.3;
+  text-wrap: balance;
+}
+/* Compact GitHub-style utility button. The repeated selector keeps the rounded
+   corners ahead of the shared square-button rule in apply.css. */
+.editButton,
+.review .sections .section .sectionHeader button.editButton {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 0;
+  padding: 4px 10px;
+  border: 1px solid rgba(220, 226, 234, 0.22);
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.03);
+  color: #d6dce4;
+  font: inherit;
+  font-size: 12px;
+  line-height: 1.2;
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    color 160ms ease;
+}
+.editButton svg {
+  width: 12px;
+  height: 12px;
+}
+.editButton:hover,
+.editButton:focus-visible,
+.review .sections .section .sectionHeader button.editButton:hover,
+.review .sections .section .sectionHeader button.editButton:focus-visible {
+  border-color: rgba(230, 235, 241, 0.55);
+  background: rgba(220, 226, 234, 0.09);
+  color: #fff;
+}
+.editButton:focus-visible,
+.removeButton:focus-visible,
+.portfolioLink:focus-visible,
+.projectLink:focus-visible,
+.privacy input:focus-visible,
+.privacyCopy a:focus-visible {
+  outline: 2px solid #e4e8ed;
+  outline-offset: 3px;
+}
+.sectionContent {
+  min-width: 0;
+}
+.facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px 42px;
+  margin: 0;
+}
+.fact {
+  min-width: 0;
+}
+.fact dt {
+  margin-bottom: 7px;
+  color: #a0a9b5;
+  font-size: 13px;
+  line-height: 1.4;
+}
+.fact dd {
+  margin: 0;
+  color: #f0f2f5;
+  font-size: 17px;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+.notProvided {
+  color: #aeb6c1;
+  font-style: italic;
+}
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.selectionLabel {
+  margin: 0 0 14px;
+  color: #aeb6c1;
+  font-size: 14px;
+  line-height: 1.55;
+}
+.tags li {
+  max-width: 100%;
+  padding: 9px 13px;
+  border: 1px solid rgba(220, 226, 234, 0.28);
+  background: rgba(255, 255, 255, 0.035);
+  color: #e6eaf0;
+  font-size: 14px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+.responseList {
+  display: grid;
+  gap: 10px;
+}
+.response {
+  min-width: 0;
+  padding: 13px 16px 14px;
+  border: 1px solid rgba(220, 226, 234, 0.1);
+  border-radius: 10px;
+  background: transparent;
+}
+.response h4 {
+  margin: 0 0 6px;
+  color: #edf0f4;
+  font-size: 17px;
+  font-weight: 530;
+  line-height: 1.4;
+}
+.response p {
+  margin: 0;
+  color: #c2c9d2;
+  font-size: 16px;
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+.responseTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.responseTags li {
+  padding: 7px 10px;
+  border: 1px solid rgba(220, 226, 234, 0.2);
+  color: #d9dfe7;
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.empty {
+  margin: 0;
+  color: #aeb6c1;
+  font-size: 15px;
+  line-height: 1.65;
+}
+.projectLink {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border: 1px solid rgba(220, 226, 234, 0.1);
+  border-radius: 10px;
+  color: #edf0f4;
+  font-size: 16px;
+  line-height: 1.55;
+  text-decoration-color: rgba(225, 229, 234, 0.48);
+  text-underline-offset: 4px;
+  transition: background-color 160ms ease;
+}
+.projectLink:hover {
+  background: rgba(220, 226, 234, 0.05);
+}
+.projectLink span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.projectLink svg {
+  flex: 0 0 auto;
+  color: #c6ccd5;
+}
+.document {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 13px;
+  padding: 12px 14px;
+  border: 1px solid rgba(220, 226, 234, 0.1);
+  border-radius: 10px;
+  background: transparent;
+}
+.fileIcon {
+  display: grid;
+  width: 38px;
+  height: 42px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid rgba(220, 226, 234, 0.24);
+  color: #dce2e9;
+}
+.documentDetails {
+  display: grid;
+  min-width: 0;
+  flex: 1 1 auto;
+  gap: 5px;
+}
+.documentDetails strong {
+  color: #eef1f5;
+  font-size: 15px;
+  font-weight: 520;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+.documentDetails small {
+  color: #aeb6c1;
+  font-size: 13px;
+}
+.removeButton,
+.portfolioLink {
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #d4dbe4;
+  font: inherit;
+  font-size: 13px;
+  text-decoration: underline;
+  text-decoration-color: rgba(198, 206, 216, 0.5);
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+.removeButton {
+  flex: 0 0 auto;
+  padding: 8px 2px 8px 7px;
+}
+.review .sections .section .document button.removeButton,
+.review .sections .section .sectionContent button.portfolioLink {
+  min-height: 0;
+  padding: 8px 2px;
+  border: 0;
+  background: transparent;
+  color: #d4dbe4;
+  box-shadow: none;
+}
+.review .sections .section .sectionContent button.portfolioLink {
+  padding: 5px 0;
+}
+.portfolioLink {
+  display: inline-flex;
+  max-width: 100%;
+  margin-top: 12px;
+  padding: 5px 0;
+  text-align: left;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+.reviewFooter {
+  display: grid;
+  gap: 14px;
+}
+.privacy {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid rgba(220, 226, 234, 0.2);
+  border-radius: 12px;
+  background: linear-gradient(
+    120deg,
+    rgba(220, 226, 234, 0.045),
+    rgba(0, 0, 0, 0.7)
+  );
+}
+.privacyIcon {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border: 1px solid rgba(220, 226, 234, 0.2);
+  color: #d4dae2;
+}
+.privacyCopy {
+  display: grid;
+  gap: 7px;
+  padding-top: 1px;
+}
+.privacyCopy label {
+  color: #e2e6eb;
+  font-size: 14px;
+  line-height: 1.55;
+  cursor: pointer;
+}
+.privacyCopy a {
+  width: fit-content;
+  color: #bec7d2;
+  font-size: 13px;
+  line-height: 1.5;
+  text-underline-offset: 3px;
+}
+.privacy input {
+  width: 19px;
+  height: 19px;
+  margin: 2px 1px 0 0;
+  accent-color: #dce2e9;
+  cursor: pointer;
+}
+.privacyError {
+  margin: -3px 0 0;
+  color: #e1e5eb;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.finishNote,
+.finishStatus {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0;
+  color: #aeb6c1;
+  font-size: 13px;
+  line-height: 1.55;
+}
+.finishStatus {
+  color: #dce2e9;
+}
+.finishStatus svg {
+  flex: 0 0 auto;
+}
+
+@media (max-width: 640px) {
+  .review {
+    gap: 22px;
+    padding: 20px;
+  }
+  .overview {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+    padding: 22px;
+  }
+  .completeness {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    column-gap: 14px;
+    padding: 14px 0 0;
+    border-top: 1px solid var(--review-line);
+    border-left: 0;
+  }
+  .completenessTop {
+    grid-row: span 2;
+  }
+  .completenessValue {
+    font-size: 27px;
+  }
+  .completenessLabel,
+  .completeness > p {
+    font-size: 13px;
+  }
+  .progressTrack {
+    margin-top: 0;
+  }
+  .completeness > p {
+    margin-top: 5px;
+  }
+  .section {
+    padding: 16px;
+  }
+  .sectionHeader {
+    margin-bottom: 12px;
+  }
+  .facts {
+    gap: 20px;
+  }
+  .fact dd {
+    font-size: 16px;
+  }
+  .response h4 {
+    font-size: 16px;
+  }
+  .response p {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 380px) {
+  .review {
+    padding: 16px;
+  }
+  .overviewIdentity {
+    gap: 14px;
+  }
+  .avatar {
+    width: 50px;
+    height: 50px;
+    font-size: 16px;
+  }
+  .overviewCopy h2 {
+    font-size: 29px;
+  }
+  .facts {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 15px;
+  }
+  .privacy {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 11px;
+  }
+  .privacy input {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: start;
+  }
+  .sectionHeader {
+    align-items: flex-start;
+  }
+}

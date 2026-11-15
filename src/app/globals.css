@@ -1,0 +1,358 @@
+@import "tailwindcss" source("../");
+
+@font-face {
+  font-family: Inter;
+  src: url("/fonts/inter.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/fonts/jetbrains-mono.woff2") format("woff2");
+  font-weight: 100 800;
+  font-display: optional;
+}
+@theme {
+  --color-background: var(--bg-primary);
+  --color-foreground: var(--text-primary);
+  --color-secondary: var(--bg-elevated);
+  --color-muted-foreground: var(--text-secondary);
+  --color-silver: #c6ccd5;
+  --color-silver-light: #f5f6f8;
+  --color-cool: #8e9bae;
+  --color-graphite: var(--bg-elevated);
+  --color-slate: var(--bg-secondary);
+  --font-sans: Inter, Arial, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+:root {
+  color-scheme: dark;
+  --bg-primary: #000000;
+  --bg-secondary: #080808;
+  --bg-elevated: #101010;
+  --bg-hover: #181818;
+  --text-primary: #f5f6f8;
+  --text-secondary: #a3a9b4;
+  --text-muted: #737b89;
+  --silver: #c6ccd5;
+  --silver-light: #f5f6f8;
+  --cool: #8e9bae;
+  --border-subtle: #252525;
+  --line: rgb(204 204 204 / 15%);
+  --light-rgb: 204 204 204;
+  --shade-rgb: 142 142 142;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* Shared layout tokens */
+  --container-max: 1120px;
+  --container-max-wide: 1320px;
+  --container-padding: 32px;
+  --container-padding-mobile: 22px;
+  --section-gap: 88px;
+  --section-gap-mobile: 64px;
+  --gutter: 24px;
+  --gutter-mobile: 16px;
+}
+* {
+  box-sizing: border-box;
+}
+html {
+  scroll-padding-top: calc(112px + env(safe-area-inset-top, 0px));
+}
+/* Horizontal-only native rails must not claim vertical document input.
+ * Lenis 1.3.27's shared prevent CSS otherwise contains both axes, including
+ * a zero-height vertical range in its nested-scroll boundary detection. */
+html.lenis [data-lenis-prevent-horizontal] {
+  overscroll-behavior-y: auto;
+}
+body {
+  isolation: isolate;
+  margin: 0;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: Inter, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+.global-starfield {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.site-foreground {
+  position: relative;
+  z-index: 1;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+button,
+a,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+button {
+  cursor: pointer;
+}
+button:disabled {
+  cursor: not-allowed;
+}
+::selection {
+  background: var(--silver);
+  color: var(--bg-primary);
+}
+:focus-visible {
+  outline: 2px solid var(--silver);
+  outline-offset: 5px;
+}
+p {
+  margin: 0;
+}
+h1,
+h2,
+h3 {
+  margin: 0;
+}
+.wrap {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding-inline: var(--container-padding);
+  position: relative;
+}
+.display {
+  font-family:
+    -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Geist",
+    Inter, sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1.04;
+}
+.eyebrow {
+  font-family:
+    -apple-system, BlinkMacSystemFont, "SF Pro Text", "Geist", Inter, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--silver);
+}
+.body-copy {
+  color: var(--text-secondary);
+  font-size: 17px;
+  line-height: 1.6;
+}
+.glass {
+  background: linear-gradient(
+    135deg,
+    rgba(198, 204, 213, 0.1),
+    rgba(198, 204, 213, 0.02) 55%,
+    rgba(198, 204, 213, 0.06)
+  );
+  backdrop-filter: blur(26px) saturate(180%);
+  border: 1px solid var(--line);
+  box-shadow:
+    inset 0 1px 0 rgba(198, 204, 213, 0.2),
+    inset 0 -1px 0 rgba(198, 204, 213, 0.03),
+    0 24px 60px #0009;
+}
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  min-height: 54px;
+  padding: 0 28px;
+  border: 0;
+  border-radius: 2px;
+  color: var(--bg-primary);
+  background: var(--silver-light);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    0 10px 40px rgba(198, 204, 213, 0.2);
+  font-family:
+    -apple-system, BlinkMacSystemFont, "SF Pro Text", "Geist", Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  transition:
+    transform 0.3s,
+    box-shadow 0.3s,
+    background 0.3s;
+}
+.button:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    0 14px 45px rgba(198, 204, 213, 0.3);
+  background: var(--silver);
+}
+.button:disabled {
+  opacity: 0.45;
+  transform: none;
+}
+.button-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  min-height: 54px;
+  padding: 0 28px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 2px;
+  color: var(--text-primary);
+  background: transparent;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  transition:
+    border-color 0.3s,
+    background 0.3s,
+    color 0.3s;
+}
+.button-outline:hover {
+  border-color: var(--silver);
+  background: var(--bg-hover);
+  color: var(--silver-light);
+}
+.site-header {
+  /* Header-only gutter: the wider container padding would crowd the logo edge. */
+  --header-inline-padding: 48px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 60;
+  isolation: isolate;
+  min-height: calc(80px + env(safe-area-inset-top, 0px));
+  padding: calc(12px + env(safe-area-inset-top, 0px))
+    max(var(--header-inline-padding), env(safe-area-inset-right, 0px)) 12px
+    max(var(--header-inline-padding), env(safe-area-inset-left, 0px));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+/* Blur the paint layer, not the header: the existing fixed menu must retain
+   the viewport as its containing block. */
+.site-header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: rgb(3 4 5 / 72%);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid rgb(255 255 255 / 5%);
+}
+.brand {
+  display: inline-flex;
+  gap: 12px;
+  align-items: center;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 14px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.brand svg {
+  color: var(--silver);
+}
+/* Discreet official artwork: keeps the asset's ratio (931×366) and full alpha.
+   The 931×366 canvas has no transparent margin, so this width is the visible
+   width of symbol, wordmark and subtitle together. */
+.astra-brand-logo {
+  width: 110px;
+}
+.skip-link {
+  position: fixed;
+  top: -70px;
+  left: 20px;
+  z-index: 100;
+  background: var(--silver);
+  color: #000;
+  padding: 14px;
+}
+.skip-link:focus {
+  top: 10px;
+}
+.events-experiences {
+  padding-top: 80px;
+}
+.content-page {
+  padding-top: 180px;
+  padding-bottom: 110px;
+  min-height: 80vh;
+}
+.content-page h1 {
+  font-size: clamp(44px, 6vw, 76px);
+  max-width: 850px;
+  margin: 20px 0 30px;
+}
+.content-page h2 {
+  font-size: 26px;
+  margin: 34px 0 14px;
+  letter-spacing: -0.025em;
+}
+.content-page p,
+.content-page li {
+  max-width: 720px;
+  line-height: 1.8;
+  color: #ffffffad;
+}
+.content-page .button {
+  margin-top: 32px;
+}
+.notice {
+  border-left: 2px solid var(--silver);
+  background: rgba(198, 204, 213, 0.05);
+  padding: 18px 24px;
+  margin: 28px 0;
+  max-width: 760px;
+}
+.text-link {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  color: var(--silver);
+}
+@media (max-width: 600px) {
+  .wrap {
+    padding-inline: var(--container-padding-mobile);
+  }
+  .site-header {
+    --header-inline-padding: 24px;
+    min-height: calc(72px + env(safe-area-inset-top, 0px));
+    padding-inline: max(
+        var(--header-inline-padding),
+        env(safe-area-inset-left, 0px)
+      )
+      max(var(--header-inline-padding), env(safe-area-inset-right, 0px));
+  }
+  .astra-brand-logo {
+    width: 90px;
+  }
+  .brand {
+    font-size: 12px;
+    gap: 7px;
+  }
+  .brand svg {
+    width: 19px;
+  }
+  .content-page {
+    padding-top: 145px;
+  }
+}
+@media (max-width: 700px) {
+  .events-experiences {
+    padding-top: 60px;
+  }
+}

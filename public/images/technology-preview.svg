@@ -1,0 +1,27 @@
+<svg width="400" height="300" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="techGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0a0a;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#1a150c;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#060606;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="techGlow" cx="70%" cy="0%" r="75%">
+      <stop offset="0%" style="stop-color:#f5b83d;stop-opacity:0.5" />
+      <stop offset="100%" style="stop-color:#f5b83d;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#techGrad)"/>
+  <ellipse cx="280" cy="-50" rx="200" ry="150" fill="url(#techGlow)"/>
+  <g fill="none" stroke="#f5b83d" stroke-width="0.5" opacity="0.3">
+    <line x1="50" y1="100" x2="350" y2="100"/>
+    <line x1="50" y1="150" x2="350" y2="150"/>
+    <line x1="50" y1="200" x2="350" y2="200"/>
+    <line x1="100" y1="50" x2="100" y2="250"/>
+    <line x1="200" y1="50" x2="200" y2="250"/>
+    <line x1="300" y1="50" x2="300" y2="250"/>
+  </g>
+  <circle cx="200" cy="150" r="60" fill="none" stroke="#f5b83d" stroke-width="2" opacity="0.6"/>
+  <circle cx="200" cy="150" r="40" fill="none" stroke="#f5b83d" stroke-width="1.5" opacity="0.4"/>
+  <circle cx="200" cy="150" r="20" fill="#f5b83d" opacity="0.3"/>
+  <polygon points="200,110 210,140 240,140 215,160 225,190 200,170 175,190 185,160 160,140 190,140" fill="#f5b83d" opacity="0.8"/>
+</svg>

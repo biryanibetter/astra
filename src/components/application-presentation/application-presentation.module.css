@@ -1,0 +1,439 @@
+.shell {
+  width: min(100%, 1240px);
+  margin-inline: auto;
+  padding: clamp(104px, 9vw, 128px) clamp(20px, 4vw, 48px) 96px;
+}
+
+.shellHeader {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  min-height: 0;
+  margin-bottom: clamp(20px, 3vw, 34px);
+}
+
+.headerSpacer {
+  display: none;
+}
+
+.shellTitle {
+  margin: 0;
+  color: #f5f6f8;
+  font-size: clamp(24px, 3vw, 34px);
+  font-weight: 550;
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+  text-align: left;
+  text-wrap: nowrap;
+}
+
+.headerActions {
+  display: flex;
+  justify-self: end;
+  align-items: center;
+  gap: 10px;
+}
+
+.glassControl,
+.carouselArrows button {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+}
+
+.glassControl:focus-visible,
+.carouselArrows button:focus-visible,
+.startButton:focus-visible {
+  outline: 2px solid #f5f6f8;
+  outline-offset: 3px;
+}
+
+.shellContent {
+  width: min(100%, 1120px);
+  margin-inline: auto;
+}
+
+.introduction {
+  position: relative;
+  isolation: isolate;
+  min-height: clamp(500px, 54vw, 650px);
+  overflow: hidden;
+  border: 1px solid rgba(231, 237, 245, 0.3);
+  border-radius: 18px;
+  background: rgba(14, 17, 21, 0.18);
+  box-shadow:
+    0 35px 90px rgba(0, 0, 0, 0.42),
+    0 10px 30px rgba(0, 0, 0, 0.18),
+    inset 0 1px rgba(255, 255, 255, 0.24);
+  backdrop-filter: blur(4px) saturate(125%);
+}
+
+.introCopy {
+  position: absolute;
+  z-index: 2;
+  top: clamp(28px, 5vw, 58px);
+  left: clamp(24px, 5vw, 58px);
+  width: min(calc(100% - clamp(48px, 10vw, 116px)), 620px);
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.introCopy::before {
+  content: none;
+}
+
+.introCopy > * {
+  position: relative;
+  z-index: 1;
+}
+
+.eyebrow {
+  margin: 0 0 22px;
+  color: #c6ccd5;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.introTitle {
+  max-width: 100%;
+  margin: 0;
+  color: #f5f6f8;
+  font-size: clamp(34px, 4.2vw, 52px);
+  font-weight: 600;
+  letter-spacing: -0.055em;
+  line-height: 1.08;
+  white-space: nowrap;
+}
+
+.introDescription {
+  max-width: 46ch;
+  margin: 17px 0 24px;
+  color: #b4bac4;
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+.startButton {
+  display: inline-flex;
+  min-height: 52px;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 0 22px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.carousel {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  min-width: 0;
+}
+
+.carouselStage {
+  display: grid;
+  height: 100%;
+  min-width: 0;
+}
+
+.imageWarmup {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.slide {
+  grid-area: 1 / 1;
+  position: relative;
+  height: 100%;
+  min-width: 0;
+  transform-origin: center center;
+  will-change: opacity, transform;
+}
+
+.slideImage {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #050607;
+}
+
+.slideImage::after {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 12% 12%, rgba(0, 0, 0, 0.62), transparent 52%),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.44), transparent 70%),
+    linear-gradient(0deg, rgba(0, 0, 0, 0.9), transparent 48%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.22), transparent 34%);
+  content: "";
+  pointer-events: none;
+}
+
+.slideImage img {
+  object-fit: cover;
+}
+
+.captionStage,
+.slideCopy {
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.captionStage {
+  display: grid;
+}
+
+.slideCopy {
+  grid-area: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  will-change: opacity, transform;
+}
+
+.slideFooter {
+  position: absolute;
+  z-index: 3;
+  right: clamp(24px, 5vw, 58px);
+  bottom: clamp(28px, 4vw, 44px);
+  left: clamp(24px, 5vw, 58px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: clamp(24px, 4vw, 64px);
+  min-height: 78px;
+}
+
+.slideCopy h3 {
+  flex: 0 0 auto;
+  margin: 0;
+  color: #f2f4f7;
+  font-size: clamp(21px, 2.2vw, 27px);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+}
+
+.slideCopy p {
+  flex: 0 0 auto;
+  max-width: 52ch;
+  margin: 9px 0 0;
+  color: #aeb5bf;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.carouselArrows {
+  display: flex;
+  align-self: end;
+  gap: 10px;
+}
+
+.carouselArrows button {
+  width: 44px;
+  height: 44px;
+  cursor: pointer;
+}
+
+.progress {
+  position: relative;
+  width: 100%;
+  padding-top: 2px;
+}
+
+.progressTrack {
+  position: absolute;
+  top: 16px;
+  right: 0;
+  left: 0;
+  height: 1px;
+  background: rgba(198, 204, 213, 0.23);
+}
+
+.progressTrack span {
+  display: block;
+  height: 100%;
+  background: #c6ccd5;
+  transition: width 420ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.progressSteps {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--progress-step-count), minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.progressStep {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  color: #929aa5;
+  text-align: center;
+}
+
+.progressCircle {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 1px solid #555d68;
+  border-radius: 50%;
+  background: #0b0c0e;
+  color: #aeb5bf;
+  font-size: 11px;
+  font-weight: 600;
+  transition:
+    background-color 260ms ease,
+    border-color 260ms ease,
+    color 260ms ease;
+}
+
+.progressStep[aria-current="step"] .progressCircle,
+.progressStep[data-complete="true"] .progressCircle {
+  border-color: #dce0e6;
+  background: #dce0e6;
+  color: #08090b;
+}
+
+.progressLabel {
+  max-width: 100%;
+  color: inherit;
+  font-size: 12px;
+  line-height: 1.4;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+    "Segoe UI", sans-serif;
+}
+
+.progressStep[aria-current="step"] .progressLabel {
+  color: #f2f4f7;
+}
+
+@media (max-width: 760px) {
+  .shell {
+    padding-top: 116px;
+    padding-inline: 18px;
+  }
+
+  .shellHeader {
+    grid-template-columns: minmax(0, 1fr) auto;
+    min-height: 0;
+    margin-bottom: 22px;
+  }
+
+  .shellTitle {
+    max-width: 100%;
+    font-size: clamp(23px, 6vw, 30px);
+    text-align: left;
+    white-space: normal;
+  }
+
+  .introduction {
+    min-height: 610px;
+  }
+
+  .introTitle {
+    max-width: 100%;
+    font-size: clamp(25px, 8vw, 40px);
+    white-space: normal;
+  }
+
+  .introDescription {
+    margin: 14px 0 18px;
+    font-size: 15px;
+  }
+
+  .slideImage {
+    aspect-ratio: auto;
+  }
+  .introCopy {
+    top: 32px;
+    left: 24px;
+    width: calc(100% - 48px);
+    padding: 0;
+  }
+  .slideCopy {
+    justify-content: flex-end;
+  }
+  .slideCopy h3 {
+    font-size: 21px;
+  }
+  .slideCopy p {
+    font-size: 14px;
+  }
+  .carouselArrows {
+    gap: 8px;
+  }
+  .carouselArrows button {
+    width: 44px;
+    height: 44px;
+  }
+  .slideFooter {
+    right: 20px;
+    bottom: 28px;
+    left: 24px;
+    gap: 18px;
+    min-height: 92px;
+  }
+  .slideCopy p {
+    max-width: none;
+    overflow: visible;
+  }
+}
+
+@media (max-width: 420px) {
+  .slideFooter {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px;
+    bottom: 34px;
+  }
+
+  .carouselArrows {
+    justify-self: end;
+  }
+}
+
+@media (max-width: 560px) {
+  .progressTrack {
+    display: none;
+  }
+
+  .progressSteps {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    row-gap: 22px;
+  }
+
+  .progressStep {
+    grid-column: span 2;
+  }
+
+  .progressSteps[data-step-count="5"] .progressStep:nth-child(4) {
+    grid-column: 2 / span 2;
+  }
+
+  .progressSteps[data-step-count="5"] .progressStep:nth-child(5) {
+    grid-column: 4 / span 2;
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "retrievedAt": "2026-10-22T21:47:24.876Z",
+  "publisher": "Qatar Ministry of Education and Higher Education — My School",
+  "portal": "https://myschools.edu.gov.qa/myschool/?culture=En",
+  "sources": [
+    {
+      "sector": "public",
+      "url": "https://myschools.edu.gov.qa/server/rest/services/V2/SchoolsEN/MapServer/0",
+      "queriedRows": 409,
+      "uniqueSourceIds": 313
+    },
+    {
+      "sector": "private",
+      "url": "https://myschools.edu.gov.qa/server/rest/services/Hosted/PrivateSchoolsView/FeatureServer/0",
+      "queriedRows": 339,
+      "uniqueSourceIds": 339
+    },
+    {
+      "sector": "specialized",
+      "url": "https://myschools.edu.gov.qa/server/rest/services/V2/SchoolsEN/MapServer/2",
+      "queriedRows": 36,
+      "uniqueSourceIds": 36
+    }
+  ],
+  "queriedRows": 784,
+  "loadedLocations": 657,
+  "duplicatesRemoved": 127,
+  "eligibility": {
+    "policy": "Include only official stage labels explicitly naming Preparatory or Secondary. Exclude all other and generic Specialized labels pending grade verification.",
+    "eligibleLocations": 279,
+    "unresolvedLocations": 23,
+    "excludedLocations": 378
+  },
+  "rejected": [],
+  "bySector": {
+    "public": 295,
+    "private": 339,
+    "specialized": 23
+  },
+  "kindergartenOnly": 174,
+  "policy": "Exact normalized name + sector + identical source coordinates only. Co-located stages merge; separate coordinates remain separate listed locations. Coordinates are source-projected WGS84, not invented or averaged.",
+  "coverage": "All rows returned by these three public layers at retrieval, less recorded duplicates/exclusions. Stage labels are source-provided categories, not exact grade ranges; campuses are represented as individual source records but not independently verified against a national register or ground survey. Not a count of unique institutions or Astra affiliations.",
+  "rights": "Publicly accessible official facts; no explicit open-data redistribution license found on these layer metadata. Attribution retained. Confirm reuse terms before public launch. No personal contact, owner, director, student or staff fields requested or imported."
+}

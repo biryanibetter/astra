@@ -1,0 +1,61 @@
+.root {
+  display: contents;
+  --shimmer-silver: rgb(125 128 134 / 92%);
+  --shimmer-contrast: #fff;
+}
+
+.root[data-shimmer-restrained="true"] {
+  --shimmer-silver: rgb(143 146 152 / 90%);
+  --shimmer-contrast: #fff;
+}
+
+/* Keep each fragment's currentColor as the solid, always-readable base. The
+   original 50%/200% gradient moves across ONE shared heading-width canvas,
+   offset to each fragment, rather than sweeping every word independently.
+   No overflow or padding: existing line boxes and word-reveal motion survive. */
+.root[data-shimmer-ready="true"]
+:is([data-shimmer-text], [class~="typewriter-text"]) {
+  -webkit-text-fill-color: transparent;
+  background: currentColor
+    linear-gradient(
+      to right,
+      transparent 0%,
+      var(--shimmer-silver) 30%,
+      var(--shimmer-contrast) 50%,
+      var(--shimmer-silver) 70%,
+      transparent 100%
+    );
+  -webkit-background-clip: text;
+  background-clip: text;
+  background-repeat: no-repeat;
+  background-size: calc(var(--shimmer-width) * var(--shimmer-spread)) 200%;
+  background-position-x: calc(
+    var(--shimmer-progress) *
+    var(--shimmer-width) *
+    (1 - var(--shimmer-spread)) -
+    var(--shimmer-offset, 0px)
+  );
+}
+
+/* Homepage: one narrow silver-to-white crest, not two dark silver flanks.
+   All fragments sample the same heading-width field and inherited timeline;
+   line breaks and individual words never start a separate sweep. */
+.root[data-shimmer-home="true"][data-shimmer-ready="true"]
+:is([data-shimmer-text], [class~="typewriter-text"]) {
+  background-image: linear-gradient(
+    to right,
+    transparent 0%,
+    rgb(185 190 198 / 85%) 35%,
+    #fff 65%,
+    transparent 100%
+  );
+  background-position-x: calc(
+    (
+      var(--shimmer-progress) *
+      (1 + var(--shimmer-spread)) -
+      var(--shimmer-spread)
+    ) *
+    var(--shimmer-width) -
+    var(--shimmer-offset, 0px)
+  );
+}

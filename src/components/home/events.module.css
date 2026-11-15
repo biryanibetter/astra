@@ -1,0 +1,285 @@
+.section {
+  position: relative;
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--container-padding) var(--section-gap);
+  color: var(--text-primary);
+}
+.heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: clamp(24px, 4vw, 48px);
+  margin-bottom: 36px;
+}
+.heading > div {
+  min-width: 0;
+  max-width: 1056px;
+  flex: 1 1 0;
+}
+.title {
+  max-width: 1056px;
+  margin: 0;
+  text-wrap: balance;
+}
+.intro {
+  max-width: 680px;
+  margin: 22px 0 0;
+  color: var(--text-secondary);
+  font-size: 16px;
+  line-height: 1.65;
+}
+.cards {
+  --layout-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  display: flex;
+  gap: 12px;
+  container-type: inline-size;
+  width: 100%;
+  min-width: 0;
+  height: clamp(400px, 29vw, 440px);
+}
+.card {
+  position: relative;
+  flex: 1 1 0;
+  height: 100%;
+  isolation: isolate;
+  overflow: hidden;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #101010;
+  transition:
+    flex-grow 360ms var(--layout-ease),
+    border-color 360ms var(--layout-ease);
+}
+.card[data-active="true"] {
+  flex-grow: 3.6;
+  z-index: 2;
+  border-color: #c6ccd580;
+  transition-duration: 400ms;
+}
+.card::before {
+  position: absolute;
+  z-index: -2;
+  inset: 0;
+  content: "";
+  background-image: var(--card-image);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  transform: scale(1.04);
+  transition: transform 360ms var(--layout-ease);
+}
+.card[data-active="true"]::before {
+  transform: scale(1.12);
+}
+.card::after {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  content: "";
+  background: linear-gradient(
+    180deg,
+    #0003,
+    transparent 35%,
+    #0002 55%,
+    #000e 100%
+  );
+}
+.number {
+  transition: opacity 180ms ease;
+  position: absolute;
+  z-index: 2;
+  top: 18px;
+  left: 18px;
+  color: #fff;
+  font: 500 18px / 1 var(--font-mono, monospace);
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+}
+.numberLabel {
+  display: inline-block;
+  font-family: Inter, Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0;
+  opacity: 0;
+  transform: translateX(-8px);
+  transition:
+    opacity 250ms ease,
+    transform 350ms var(--layout-ease);
+  pointer-events: none;
+}
+.card[data-active="true"] .numberLabel {
+  opacity: 1;
+  transform: none;
+}
+.cardButton {
+  display: block;
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  border: 0;
+  background: transparent;
+  color: white;
+  text-align: left;
+}
+.cardButton:focus-visible {
+  outline: 2px solid var(--silver);
+  outline-offset: -4px;
+}
+.cardBottom {
+  position: absolute;
+  /* A shared TOP anchor: paragraph length can never move a title. */
+  top: calc(100% - 140px);
+  left: 20px;
+  right: 20px;
+  transform: translateY(0);
+  transition:
+    transform 350ms var(--layout-ease),
+    opacity 180ms ease;
+}
+.cards[data-expanded="true"]
+  .card:not([data-active="true"])
+  :is(.cardBottom, .number) {
+  opacity: 0;
+}
+.cardCopy {
+  display: flex;
+  width: max(0px, calc((100cqw - 36px) / 4 - 40px));
+  min-width: 0;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 80px;
+  /* Switch text layout once at the interaction boundary. Interpolating this
+     width makes line breaks jump repeatedly while the photographic card grows. */
+}
+.copyFrame {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  grid-template-rows: auto auto;
+  gap: 12px;
+  align-content: start;
+}
+.cardBottom strong {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-height: var(--copy-title-height, 0px);
+  font-size: clamp(15px, 1.45vw, 22px);
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  hyphens: none;
+  opacity: 0.9;
+}
+.introCopy,
+.description {
+  display: block;
+  width: 100%;
+  color: #dededc;
+  font-size: 13px;
+  line-height: 1.55;
+}
+.card[data-active="true"] .cardBottom {
+  transform: translateY(calc(-1 * var(--copy-lift, 0px)));
+}
+.card[data-active="true"] .cardCopy {
+  width: min(440px, calc((100cqw - 36px) * 3.6 / 6.6 - 40px));
+}
+.card[data-active="true"] .copyFrame {
+  grid-template-rows: auto auto;
+}
+.card[data-active="true"] strong {
+  opacity: 1;
+}
+.description {
+  pointer-events: none;
+}
+.description > span {
+  display: inline-block;
+  opacity: 0;
+  filter: blur(3px);
+  transform: translateY(4px);
+  white-space: pre;
+  transition:
+    opacity 140ms ease var(--detail-exit-delay),
+    filter 140ms ease var(--detail-exit-delay),
+    transform 140ms ease var(--detail-exit-delay);
+}
+.card[data-active="true"] .description > span {
+  opacity: 1;
+  filter: blur(0px);
+  transform: translateY(0);
+  transition-duration: 180ms;
+  transition-timing-function: ease-out;
+  transition-delay: var(--detail-enter-delay);
+}
+@media (max-width: 1000px) {
+  .heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .cards {
+    height: 420px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+  }
+  .card {
+    flex: 0 0 52%;
+  }
+  .cardCopy,
+  .card[data-active="true"] .cardCopy {
+    width: 100%;
+  }
+  .cards::-webkit-scrollbar {
+    display: none;
+  }
+  .cardBottom {
+    top: calc(100% - 140px);
+  }
+}
+@media (max-width: 700px) {
+  .section {
+    padding: 0 var(--container-padding-mobile) var(--section-gap-mobile);
+  }
+  .desktopBreak {
+    display: none;
+  }
+  .intro {
+    margin-top: 17px;
+    font-size: 15px;
+  }
+  .heading {
+    margin-bottom: 28px;
+  }
+  .card {
+    flex-basis: min(84vw, 380px);
+  }
+  .number {
+    top: 16px;
+    left: 16px;
+  }
+  .cardButton {
+    padding: 18px;
+  }
+  .cardBottom {
+    left: 18px;
+    right: 18px;
+  }
+  .cardBottom strong {
+    font-size: clamp(19px, 5.4vw, 24px);
+  }
+}
