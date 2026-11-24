@@ -427,8 +427,7 @@
 .school-map-popup.maplibregl-popup-anchor-right .maplibregl-popup-tip {
   border-left-color: #555b63;
 }
-.map-fallback,
-.network-map-loading {
+.map-fallback {
   position: absolute;
   z-index: 4;
   inset: 0;

@@ -19,7 +19,6 @@
   },
   "dependencies": {
     "@hookform/resolvers": "5.9.1",
-    "@paper-design/shaders": "^0.0.82",
     "@radix-ui/react-checkbox": "^1.4.1",
     "@radix-ui/react-label": "^2.1.17",
     "@radix-ui/react-radio-group": "^1.5.1",

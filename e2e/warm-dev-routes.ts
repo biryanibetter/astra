@@ -31,8 +31,6 @@ export default async function warmDevRoutes(config: FullConfig) {
       "/apply/received",
       "/apply/unknown-pathway",
       "/schools/unknown-school",
-      "/multistep-form-preview",
-      "/sterling-preview",
       "/admin",
       "/admin/login",
       "/api/admin/applications",

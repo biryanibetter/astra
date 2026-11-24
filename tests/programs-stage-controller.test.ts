@@ -1,4 +1,6 @@
-import { describe, expect, it } from "vitest";
+import { act, createElement } from "react";
+import { createRoot } from "react-dom/client";
+import { describe, expect, it, vi } from "vitest";
 import {
   initialProgramsStageState,
   isLastChapterDisplayCommitted,
@@ -9,6 +11,7 @@ import {
   shouldHandleProgramsStageKey,
   shouldReleaseProgramsWheelBoundary,
   stateAfterFocusExit,
+  useProgramsStageController,
 } from "../src/components/programs/use-programs-stage-controller";
 
 describe("bounded Programs stage controller", () => {
@@ -71,4 +74,41 @@ describe("bounded Programs stage controller", () => {
     expect(isLastChapterDisplayCommitted(3, true, false, true)).toBe(false);
     expect(isLastChapterDisplayCommitted(3, true, false)).toBe(true);
   });
+});
+
+it("measures the composition once for a small wheel approach without consuming native input", async () => {
+  function Stage() {
+    const { stageRef } = useProgramsStageController(4);
+    return createElement(
+      "section",
+      { ref: stageRef },
+      createElement("div", { "data-programs-composition": "" }),
+    );
+  }
+
+  vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true);
+  const host = document.createElement("div");
+  document.body.append(host);
+  const root = createRoot(host);
+  try {
+    await act(async () => root.render(createElement(Stage)));
+    const composition = host.querySelector("[data-programs-composition]");
+    if (!composition) throw new Error("Missing test composition");
+    const measure = vi
+      .spyOn(composition, "getBoundingClientRect")
+      .mockReturnValue(new DOMRect(0, 600, 700, 420));
+    const event = new WheelEvent("wheel", {
+      bubbles: true,
+      cancelable: true,
+      deltaY: 20,
+    });
+    host.dispatchEvent(event);
+    expect(event.defaultPrevented).toBe(false);
+    expect(measure).toHaveBeenCalledTimes(1);
+  } finally {
+    await act(async () => root.unmount());
+    host.remove();
+    vi.restoreAllMocks();
+    vi.unstubAllGlobals();
+  }
 });

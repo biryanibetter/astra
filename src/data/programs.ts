@@ -2,7 +2,7 @@
  * Astra Programs Data
  *
  * Structured content for the four cinematic program chapters.
- * Images are locally hosted in /public/images/programs/
+ * Images are locally hosted in /public/images/program-stock/
  * All photos sourced from Pexels/Unsplash under free commercial-use licenses.
  * No attribution required per platform licenses, but photographer credit is appreciated.
  */

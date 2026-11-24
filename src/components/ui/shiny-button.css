@@ -50,7 +50,7 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
-.astra-card-glass:disabled > :not(.shiny-button-content) {
+.astra-card-glass:disabled .shiny-button-surface > span {
   animation-play-state: paused;
 }
 
@@ -68,6 +68,20 @@
   gap: 17px;
   width: 100%;
   min-width: 0;
+}
+
+.shiny-button-surface {
+  display: contents;
+  border-radius: inherit;
+}
+
+.shiny-button-surface[data-distant] {
+  display: block;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content-visibility: auto;
+  overflow-clip-margin: 8px;
 }
 
 .shiny-button-border,

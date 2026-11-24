@@ -232,13 +232,14 @@ export function useProgramsStageController(
   const centerError = useCallback(() => {
     const shell = composition();
     if (!shell) return Number.POSITIVE_INFINITY;
+    const style = getComputedStyle(shell);
     const clearance =
       Number.parseFloat(
-        getComputedStyle(shell).getPropertyValue("--programs-header-clearance"),
+        style.getPropertyValue("--programs-header-clearance"),
       ) || 0;
     const rect = shell.getBoundingClientRect();
     const configuredBottomClearance = Number.parseFloat(
-      getComputedStyle(shell).getPropertyValue("--programs-bottom-clearance"),
+      style.getPropertyValue("--programs-bottom-clearance"),
     );
     const bottomClearance = Number.isFinite(configuredBottomClearance)
       ? configuredBottomClearance
@@ -306,45 +307,31 @@ export function useProgramsStageController(
   );
 
   useEffect(() => {
-    const captureOversizedApproach = (travel: number): -1 | 1 | false => {
+    const captureOversizedApproach = (
+      travel: number,
+      beforeScroll?: () => void,
+    ): "centered" | "centering" | null => {
       const direction = travel > 0 ? 1 : -1;
       const fromAbove = stateRef.current === "FREE_BEFORE" && direction > 0;
       const fromBelow = stateRef.current === "FREE_AFTER" && direction < 0;
-      if (!fromAbove && !fromBelow) return false;
+      if (!fromAbove && !fromBelow) return null;
       const error = centerError();
-      if (error * direction < 0) return false;
+      if (error * direction < 0) return null;
       approachDirectionRef.current = direction;
       // If the wheel delta is large enough to reach the lock position (error)
       // plus a buffer, trigger instant centering. This handles large wheel
       // gestures that would otherwise require many scroll events.
       const approachBuffer = 200;
-      if (Math.abs(travel) < Math.abs(error) + approachBuffer) return false;
+      if (Math.abs(travel) < Math.abs(error) + approachBuffer) return null;
+      beforeScroll?.();
       update(fromAbove ? "CENTERING_FROM_ABOVE" : "CENTERING_FROM_BELOW");
       window.scrollBy({ top: error, behavior: "instant" });
+      // Only remeasure after a scroll write; sticky geometry can then change.
       if (isProgramsCompositionCentered(centerError())) {
         lockAtCurrentPosition(direction > 0);
-        return direction;
+        return "centered";
       }
-      return false;
-    };
-
-    const predictScrollCrossesCenter = (delta: number): -1 | 1 | false => {
-      const current = stateRef.current;
-      if (current !== "FREE_BEFORE" && current !== "FREE_AFTER") return false;
-      const direction = delta > 0 ? 1 : -1;
-      const fromAbove = current === "FREE_BEFORE" && direction > 0;
-      const fromBelow = current === "FREE_AFTER" && direction < 0;
-      if (!fromAbove && !fromBelow) return false;
-      const error = centerError();
-      if (error * direction < 0) return false;
-      // Conservatively predict a crossing when this wheel delta can span the
-      // remaining distance plus a buffer.
-      const approachBuffer = 200;
-      if (Math.abs(delta) >= Math.abs(error) + approachBuffer) {
-        approachDirectionRef.current = direction;
-        return direction;
-      }
-      return false;
+      return "centering";
     };
 
     const onScroll = () => {
@@ -419,34 +406,8 @@ export function useProgramsStageController(
       );
       if (!delta) return;
       if (stateRef.current !== "LOCKED") {
-        // Check for fast scroll that would cross the center point.
-        const crossResult = predictScrollCrossesCenter(delta);
-        if (crossResult) {
-          event.preventDefault();
-          update(
-            crossResult > 0 ? "CENTERING_FROM_ABOVE" : "CENTERING_FROM_BELOW",
-          );
-          const error = centerError();
-          window.scrollBy({ top: error, behavior: "instant" });
-          if (isProgramsCompositionCentered(centerError())) {
-            lockAtCurrentPosition(crossResult > 0);
-          }
-          gesture.current.spent = true;
-          window.clearTimeout(gesture.current.timer);
-          gesture.current.timer = window.setTimeout(() => {
-            gesture.current = {
-              amount: 0,
-              direction: 0,
-              spent: false,
-              timer: 0,
-            };
-          }, GESTURE_COOLDOWN_MS);
-          return;
-        }
-        const approachResult = captureOversizedApproach(delta);
-        if (approachResult) {
-          event.preventDefault();
-          // Large wheel triggered lock and advanced chapter; consume this gesture
+        if (captureOversizedApproach(delta, () => event.preventDefault())) {
+          // The large wheel gesture belongs to entry, not the next chapter.
           gesture.current.spent = true;
           window.clearTimeout(gesture.current.timer);
           gesture.current.timer = window.setTimeout(() => {
@@ -542,7 +503,8 @@ export function useProgramsStageController(
         const travel =
           keyDirection *
           (event.key.startsWith("Arrow") ? 40 : window.innerHeight * 0.85);
-        if (captureOversizedApproach(travel)) event.preventDefault();
+        if (captureOversizedApproach(travel) === "centered")
+          event.preventDefault();
         return;
       }
       if (event.repeat) {

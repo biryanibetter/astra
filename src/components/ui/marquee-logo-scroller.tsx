@@ -21,7 +21,8 @@ export function MarqueeLogoScroller() {
     const marks = Array.from(
       track.querySelectorAll<HTMLElement>(".orbital-brand"),
     );
-    let geometry: { element: HTMLElement; center: number }[] = [];
+    let geometry: { element: HTMLElement; center: number; focus?: string }[] =
+      [];
     let width = 0;
     let loopWidth = 0;
     let frame = 0;
@@ -42,14 +43,18 @@ export function MarqueeLogoScroller() {
       const travel =
         (((Number(animation.currentTime) || 0) * speed) / 1000) % loopWidth;
       const radius = Math.max(160, width * 0.27);
-      for (const { element, center } of geometry) {
-        const offset = center - travel - width / 2;
+      for (const mark of geometry) {
+        const offset = mark.center - travel - width / 2;
         const distance = Math.abs(
           offset - Math.round(offset / loopWidth) * loopWidth,
         );
         const linear = Math.max(0, 1 - distance / radius);
-        const focus = linear * linear * (3 - 2 * linear);
-        element.style.setProperty("--focus", focus.toFixed(4));
+        const focus = (linear * linear * (3 - 2 * linear)).toFixed(4);
+        // Most marks stay outside the spotlight. Leave their style alone
+        // unless the exact value passed to CSS actually changes.
+        if (focus === mark.focus) continue;
+        mark.element.style.setProperty("--focus", focus);
+        mark.focus = focus;
       }
       frame = requestAnimationFrame(illuminate);
     };

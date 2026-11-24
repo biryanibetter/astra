@@ -31,9 +31,7 @@ test("all retained public and application routes resolve", async ({
   expect((await request.get("/apply/received")).status()).toBe(404);
   expect((await request.get("/schools/unknown-school")).status()).toBe(404);
   for (const path of ["/multistep-form-preview", "/sterling-preview"]) {
-    expect((await request.get(path)).status(), path).toBe(
-      process.env.PLAYWRIGHT_PRODUCTION === "true" ? 404 : 200,
-    );
+    expect((await request.get(path)).status(), path).toBe(404);
   }
   const admin = await request.get("/admin");
   expect(admin.url()).toContain("/admin/login");

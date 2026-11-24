@@ -53,15 +53,36 @@ export const SCHOOL_LOCATIONS_UNRESOLVED = SNAPSHOT_LOCATIONS.filter(
     school.stages.length === 0 || school.stages.includes("Specialized"),
 ).length;
 
-// Keep the rendering source lean: full provenance is retained in the snapshot and search records.
-export const SCHOOL_GEOJSON = {
-  type: "FeatureCollection" as const,
-  features: SCHOOL_LOCATIONS.map((school) => ({
+const schoolFeatures = [];
+let west = Infinity;
+let south = Infinity;
+let east = -Infinity;
+let north = -Infinity;
+for (const school of SCHOOL_LOCATIONS) {
+  const [longitude, latitude] = school.coordinates;
+  west = Math.min(west, longitude);
+  south = Math.min(south, latitude);
+  east = Math.max(east, longitude);
+  north = Math.max(north, latitude);
+  schoolFeatures.push({
     type: "Feature" as const,
     id: school.id,
     geometry: { type: "Point" as const, coordinates: school.coordinates },
     properties: { id: school.id, name: school.name },
-  })),
+  });
+}
+
+// Compute the fitted camera extent during feature creation, avoiding an
+// additional pass over the static school coordinates when the map loads.
+export const SCHOOL_MAP_FIT_BOUNDS: [[number, number], [number, number]] = [
+  [west, south],
+  [east, north],
+];
+
+// Keep the rendering source lean: full provenance is retained in the snapshot and search records.
+export const SCHOOL_GEOJSON = {
+  type: "FeatureCollection" as const,
+  features: schoolFeatures,
 };
 
 const byId = new Map(SCHOOL_LOCATIONS.map((school) => [school.id, school]));

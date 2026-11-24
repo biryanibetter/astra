@@ -92,12 +92,32 @@ export function ShinyButton({
 
 /** The same material layers used by the network cards, on a real form button. */
 export function ShinyMaterial({ children }: { children: ReactNode }) {
+  const surface = useRef<HTMLSpanElement>(null);
+  useEffect(() => {
+    const layer = surface.current;
+    const button = layer?.parentElement;
+    if (!layer || !button || typeof IntersectionObserver === "undefined")
+      return;
+    // Let the original CSS animations acquire their document start times before
+    // allowing the browser to skip distant decorative descendants. The label,
+    // hit target and their intrinsic layout never enter the skipped subtree.
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        layer.toggleAttribute("data-distant", entry?.isIntersecting === false);
+      },
+      { rootMargin: "100% 0px" },
+    );
+    observer.observe(button);
+    return () => observer.disconnect();
+  }, []);
   return (
     <>
       <span className="shiny-button-content">{children}</span>
-      <span className="shiny-button-border" aria-hidden="true" />
-      <span className="shiny-button-glimmer" aria-hidden="true" />
-      <span className="shiny-button-ripple" aria-hidden="true" />
+      <span ref={surface} className="shiny-button-surface" aria-hidden="true">
+        <span className="shiny-button-border" />
+        <span className="shiny-button-glimmer" />
+        <span className="shiny-button-ripple" />
+      </span>
     </>
   );
 }

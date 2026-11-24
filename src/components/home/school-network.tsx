@@ -12,14 +12,7 @@ import {
 } from "@/lib/school-locations";
 import "./school-network.css";
 
-const SchoolMap = dynamic(() => import("./school-map"), {
-  ssr: false,
-  loading: () => (
-    <div className="network-map-loading" role="status">
-      Loading map…
-    </div>
-  ),
-});
+const SchoolMap = dynamic(() => import("./school-map"), { ssr: false });
 
 export function SchoolNetwork() {
   const mapTrigger = useRef<HTMLDivElement>(null);
@@ -42,6 +35,7 @@ export function SchoolNetwork() {
     setQuery(school.name);
     setActive(-1);
     setSearchFocused(false);
+    setMapReady(true);
   }, []);
 
   useEffect(() => {
@@ -59,10 +53,6 @@ export function SchoolNetwork() {
     observer.observe(target);
     return () => observer.disconnect();
   }, [mapReady]);
-
-  useEffect(() => {
-    if (selected) setMapReady(true);
-  }, [selected]);
 
   useEffect(() => {
     if (active >= 0) {
@@ -303,17 +293,13 @@ export function SchoolNetwork() {
         </div>
       </div>
       <div className="network-map-wrap" ref={mapTrigger} data-reveal="image">
-        {mapReady ? (
+        {mapReady && (
           <SchoolMap
             key={mapAttempt}
             selected={selected}
             onSelect={select}
             onRetry={() => setMapAttempt((attempt) => attempt + 1)}
           />
-        ) : (
-          <div className="network-map-loading" aria-hidden="true">
-            Map loads as you explore
-          </div>
         )}
       </div>
       <nav

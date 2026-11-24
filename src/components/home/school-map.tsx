@@ -12,7 +12,12 @@ import {
   SCHOOL_GEOJSON,
   type SchoolLocation,
 } from "@/lib/school-locations";
-import { QATAR_MAP_BOUNDS, QATAR_MAP_MIN_ZOOM } from "@/lib/school-map-bounds";
+import {
+  QATAR_MAP_BOUNDS,
+  QATAR_MAP_MIN_ZOOM,
+  SCHOOL_MAP_FIT_BOUNDS,
+} from "@/lib/school-map-bounds";
+import { SCHOOL_MAP_LAYERS } from "@/lib/school-map-layers";
 
 const STYLE = "https://tiles.openfreemap.org/styles/dark";
 const SOURCE = "astra-schools";
@@ -32,6 +37,7 @@ export default function SchoolMap({
   const host = useRef<HTMLElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const sharedLocationPopupRef = useRef<maplibregl.Popup | null>(null);
+  const selectedFilterRef = useRef<string | null>(null);
   const selectRef = useRef(onSelect);
   const selectedRef = useRef(selected);
   const viewRef = useRef<{
@@ -60,6 +66,8 @@ export default function SchoolMap({
     let map: maplibregl.Map;
     let resize: ResizeObserver | undefined;
     let disposed = false;
+    let prepared = false;
+    delete container.dataset.prepared;
     const timeout = window.setTimeout(() => {
       if (!disposed) setFailure(true);
     }, 25000);
@@ -94,7 +102,20 @@ export default function SchoolMap({
       });
       // A later successful render recovers from transient tile/network errors.
       map.on("idle", () => {
-        if (!disposed && map.isStyleLoaded()) setFailure(false);
+        if (disposed || !map.isStyleLoaded()) return;
+        setFailure(false);
+        if (
+          !prepared &&
+          map.areTilesLoaded() &&
+          map.getLayer("astra-points") &&
+          map.isSourceLoaded(SOURCE) &&
+          map.queryRenderedFeatures({
+            layers: ["astra-points", "astra-clusters"],
+          }).length
+        ) {
+          prepared = true;
+          container.dataset.prepared = "true";
+        }
       });
       map.once("load", () => {
         if (disposed) return;
@@ -108,65 +129,10 @@ export default function SchoolMap({
           maxzoom: MAX_ZOOM + 1,
           clusterMaxZoom: MAX_ZOOM,
         });
-        map.addLayer({
-          id: "astra-clusters",
-          type: "circle",
-          source: SOURCE,
-          filter: ["has", "point_count"],
-          paint: {
-            "circle-color": "#c6ccd5",
-            "circle-radius": [
-              "step",
-              ["get", "point_count"],
-              15,
-              10,
-              19,
-              50,
-              24,
-              150,
-              28,
-            ],
-            "circle-stroke-color": "#f5f6f8",
-            "circle-stroke-width": 1,
-          },
-        });
-        map.addLayer({
-          id: "astra-cluster-count",
-          type: "symbol",
-          source: SOURCE,
-          filter: ["has", "point_count"],
-          layout: {
-            "text-field": ["get", "point_count_abbreviated"],
-            "text-font": ["Noto Sans Regular"],
-            "text-size": 11,
-          },
-          paint: { "text-color": "#101114" },
-        });
-        map.addLayer({
-          id: "astra-points",
-          type: "circle",
-          source: SOURCE,
-          filter: ["!", ["has", "point_count"]],
-          paint: {
-            "circle-radius": ["interpolate", ["linear"], ["zoom"], 8, 4, 14, 6],
-            "circle-color": "#c6ccd5",
-            "circle-stroke-color": "#fff",
-            "circle-stroke-width": 1.2,
-          },
-        });
-        map.addLayer({
-          id: "astra-selected",
-          type: "circle",
-          source: SOURCE,
-          filter: ["==", ["get", "id"], ""],
-          paint: {
-            "circle-radius": 10,
-            "circle-color": "#ffffff",
-            "circle-opacity": 0.12,
-            "circle-stroke-color": "#fff",
-            "circle-stroke-width": 1.2,
-          },
-        });
+        for (const layer of SCHOOL_MAP_LAYERS) {
+          map.addLayer(layer);
+        }
+        selectedFilterRef.current = "";
         map.on("click", "astra-clusters", async (event) => {
           const feature = event.features?.[0];
           if (feature?.geometry.type !== "Point") return;
@@ -244,15 +210,8 @@ export default function SchoolMap({
             map.getCanvas().style.cursor = "";
           });
         }
-        const points = SCHOOL_GEOJSON.features.map(
-          (feature) => feature.geometry.coordinates as [number, number],
-        );
-        const bounds = points.reduce(
-          (box, point) => box.extend(point),
-          new maplibregl.LngLatBounds(),
-        );
         if (!savedView)
-          map.fitBounds(bounds, {
+          map.fitBounds(SCHOOL_MAP_FIT_BOUNDS, {
             padding: { top: 65, bottom: 55, left: 35, right: 35 },
             maxZoom: 9,
             duration: 0,
@@ -293,7 +252,11 @@ export default function SchoolMap({
     const map = mapRef.current;
     if (!map || !mapLoaded) return;
     sharedLocationPopupRef.current?.remove();
-    map.setFilter("astra-selected", ["==", ["get", "id"], selected?.id ?? ""]);
+    const selectedId = selected?.id ?? "";
+    if (selectedFilterRef.current !== selectedId) {
+      map.setFilter("astra-selected", ["==", ["get", "id"], selectedId]);
+      selectedFilterRef.current = selectedId;
+    }
     if (!selected) return;
     const content = document.createElement("div");
     const title = document.createElement("strong");

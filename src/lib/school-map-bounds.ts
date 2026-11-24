@@ -8,3 +8,5 @@ export const QATAR_MAP_BOUNDS: [[number, number], [number, number]] = [
 // Keeps the entire country useful on desktop and mobile without allowing a
 // zoomed-out world view. MapLibre still permits closer campus inspection.
 export const QATAR_MAP_MIN_ZOOM = 7;
+
+export { SCHOOL_MAP_FIT_BOUNDS } from "@/lib/school-locations";

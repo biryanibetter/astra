@@ -13,6 +13,7 @@ export default defineConfig({
     "restored-local-form.spec.ts",
     "reconciled-frontend.spec.ts",
     "cloudflare-runtime.spec.ts",
+    "home-map-preparation.spec.ts",
   ],
   outputDir: ".test-output/cloudflare/results",
   use: { ...base.use, baseURL },

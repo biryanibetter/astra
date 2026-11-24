@@ -68,6 +68,12 @@ and blocked APIs. `pnpm build:next` preserves the original Node build; `pnpm dev
 and `pnpm start` retain their original Node behavior. Typechecking first
 regenerates native route types because vinext shares `.next/types` with Next.
 
+The Vite build prepares common MapLibre programs in parallel at map creation
+when the browser exposes `KHR_parallel_shader_compile`. This is a build-local
+adapter to the locked MapLibre distribution, not a patched installation. If
+that distribution changes, the build warns and uses upstream rendering. Native
+Next.js builds also use upstream rendering.
+
 Local checks/dry runs do not certify a hosted deployment, free-tier CPU limits or
 domain mapping. Verify these after Git push using authenticated Cloudflare access.
 Never put credentials in source or chat.
