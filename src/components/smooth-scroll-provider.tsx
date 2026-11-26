@@ -1,19 +1,25 @@
 "use client";
 
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type Lenis from "lenis";
-import type { LenisOptions, VirtualScrollData } from "lenis";
+import type { LenisOptions } from "lenis";
 import { ReactLenis, useLenis } from "lenis/react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef } from "react";
 import "lenis/dist/lenis.css";
 
+const reviewSmoothing =
+  process.env.NEXT_PUBLIC_ASTRA_REVIEW_SMOOTH_SCROLL === "true" &&
+  typeof window !== "undefined" &&
+  ["127.0.0.1", "localhost", "[::1]"].includes(window.location.hostname);
+
 const options: LenisOptions = {
-  autoRaf: true,
+  autoRaf: false,
   allowNestedScroll: true,
   anchors: false,
   stopInertiaOnNavigate: true,
-  // Preserve Astra's established motion policy without changing the OS signal.
-  respectReducedMotion: false,
+  respectReducedMotion: !reviewSmoothing,
   // Local galleries/chapter interactions may already own a bubbling event.
   // Lenis 1.3.27 does not check defaultPrevented itself. Never rewrite deltas.
   virtualScroll: ({ event }) => !event.defaultPrevented,
@@ -33,6 +39,19 @@ function ScrollLifecycle() {
   const searchParams = useSearchParams().toString();
   const pendingAnchor = useRef<HTMLElement | null>(null);
 
+  useEffect(() => {
+    if (!lenis) return;
+    gsap.registerPlugin(ScrollTrigger);
+    const unsubscribe = lenis.on("scroll", ScrollTrigger.update);
+    const advance = (time: number) => lenis.raf(time * 1000);
+    gsap.ticker.add(advance);
+    gsap.ticker.lagSmoothing(0);
+    return () => {
+      gsap.ticker.remove(advance);
+      unsubscribe();
+    };
+  }, [lenis]);
+
   // biome-ignore lint/correctness/useExhaustiveDependencies: Route identity cancels old momentum; Next owns the destination and history restoration.
   useEffect(() => {
     if (!lenis) return;
@@ -47,29 +66,10 @@ function ScrollLifecycle() {
       pendingAnchor.current = null;
       cancelInertia(lenis);
     };
-    const reverse = ({ deltaY, event }: VirtualScrollData) => {
-      if (
-        event.type !== "wheel" ||
-        event.ctrlKey ||
-        !deltaY ||
-        lenis.isStopped ||
-        lenis.isLocked
-      )
-        return;
-      const pending = lenis.targetScroll - lenis.actualScroll;
-      if (pending * deltaY < 0) {
-        // This event is emitted before Lenis adds the normalized input. Discard
-        // only opposing unfinished travel; Lenis then consumes this delta once.
-        // No multiplier, viewport cap, target mutation or second wheel listener.
-        synchronize();
-      }
-    };
-    const unsubscribe = lenis.on("virtual-scroll", reverse);
     window.addEventListener("popstate", synchronize);
     const host = window as Window & { __LENIS__?: typeof lenis };
     host.__LENIS__ = lenis;
     return () => {
-      unsubscribe();
       window.removeEventListener("popstate", synchronize);
       if (host.__LENIS__ === lenis) delete host.__LENIS__;
     };
@@ -158,8 +158,7 @@ export function SmoothScrollProvider({
 }: {
   children: React.ReactNode;
 }) {
-  // The official adapter creates/destroys the instance in its effect, including
-  // Strict Mode replay. autoRaf is the sole Lenis driver; no app RAF calls raf().
+  // The adapter owns the instance; ScrollLifecycle owns its only frame driver.
   return (
     <ReactLenis root options={options}>
       <Suspense fallback={null}>

@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface AnimatedReelProps {
   src?: string;
@@ -14,9 +14,25 @@ export function AnimatedReel({
   fallbackSrc = "/media/astra-reel-still.webp",
 }: AnimatedReelProps) {
   const [failed, setFailed] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const artwork = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const element = artwork.current;
+    if (!element) return;
+    if (typeof IntersectionObserver === "undefined") {
+      setVisible(true);
+      return;
+    }
+    const observer = new IntersectionObserver((entries) =>
+      setVisible(Boolean(entries.at(-1)?.isIntersecting)),
+    );
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <div className="reel-artwork" aria-hidden="true">
+    <div ref={artwork} className="reel-artwork" aria-hidden="true">
       <Image
         className="reel-artwork-still"
         src={fallbackSrc}
@@ -37,6 +53,7 @@ export function AnimatedReel({
           unoptimized
           loading="eager"
           decoding="async"
+          style={visible ? undefined : { display: "none" }}
           draggable={false}
           onError={() => setFailed(true)}
         />

@@ -258,6 +258,15 @@
   min-width: 0;
   perspective: 1400px;
 }
+/* Prepare only the moving surfaces, and release the hint once they leave
+   the viewport margin. Keep the existing masks, paints and transforms. */
+@media (prefers-reduced-motion: no-preference) {
+  .hero .creation-artwork[data-cinematic-nearby] > .creation-subject-depth,
+  .hero .creation-artwork[data-cinematic-nearby] > .creation-atmosphere,
+  .reel-media-perspective[data-cinematic-nearby] {
+    will-change: transform;
+  }
+}
 .reel-frame {
   position: relative;
   padding: 7px;

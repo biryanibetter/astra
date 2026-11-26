@@ -16,6 +16,21 @@ export function useCinematicDepth(
     // The shared artwork is also used outside the homepage hero. Do not create
     // an unrelated ScrollTrigger on the Programs sticky stage.
     if (kind === "artwork" && !element.closest(".hero")) return;
+    const surface =
+      kind === "artwork" ? element : element.closest(".reel-media-perspective");
+    const nearby =
+      surface && typeof IntersectionObserver !== "undefined"
+        ? new IntersectionObserver(
+            ([entry]) => {
+              surface.toggleAttribute(
+                "data-cinematic-nearby",
+                Boolean(entry?.isIntersecting),
+              );
+            },
+            { rootMargin: "160px 0px" },
+          )
+        : null;
+    if (surface) nearby?.observe(surface);
     gsap.registerPlugin(ScrollTrigger);
     const context = gsap.context(() => {
       const trigger = kind === "artwork" ? element.closest(".hero") : element;
@@ -79,6 +94,8 @@ export function useCinematicDepth(
       disposed = true;
       window.removeEventListener("load", refresh);
       resize?.disconnect();
+      nearby?.disconnect();
+      surface?.removeAttribute("data-cinematic-nearby");
       context.revert();
     };
   }, [ref, kind, reduced]);

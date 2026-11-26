@@ -51,6 +51,9 @@ export function CreationArtwork() {
     const pixels = document.createElement("canvas");
     const backdrop = document.createElement("canvas");
     const light = document.createElement("canvas");
+    const shimmerLayers = Array.from({ length: 6 }, () =>
+      document.createElement("canvas"),
+    );
     const pixelContext = pixels.getContext("2d");
     const backdropContext = backdrop.getContext("2d");
     const lightContext = light.getContext("2d");
@@ -63,7 +66,6 @@ export function CreationArtwork() {
     let elapsed = 0;
     let ready = false;
     let visible = typeof IntersectionObserver === "undefined";
-    let shimmerGroups: Path2D[] = [];
     const page =
       typeof MutationObserver === "undefined" ? null : root.closest("main");
 
@@ -72,18 +74,12 @@ export function CreationArtwork() {
       context.clearRect(0, 0, width, height);
       context.imageSmoothingEnabled = false;
 
-      // Six source-derived, spatially interleaved groups breathe at offset
-      // phases. Cached paths keep this to six batched fills, not per-cell JS,
-      // per-frame sampling, random flicker or six full-resolution bitmaps.
-      for (let group = 0; group < shimmerGroups.length; group++) {
-        const path = shimmerGroups[group];
-        if (!path) continue;
-        context.save();
-        context.clip(path);
-        context.globalAlpha =
-          pulseOpacity(elapsed) * shimmerOpacity(elapsed, group);
-        context.drawImage(pixels, 0, 0, width, height);
-        context.restore();
+      // Keep the same six phases, but rasterize the complex clip paths only
+      // on resize. Scrolling then composites textures, not thousands of clips.
+      const pulse = pulseOpacity(elapsed);
+      for (const [group, layer] of shimmerLayers.entries()) {
+        context.globalAlpha = pulse * shimmerOpacity(elapsed, group);
+        context.drawImage(layer, 0, 0, width, height);
       }
       context.globalCompositeOperation = "source-over";
 
@@ -223,10 +219,7 @@ export function CreationArtwork() {
         .getContext("2d")
         ?.drawImage(backdrop, 0, 0, atmosphere.width, atmosphere.height);
 
-      shimmerGroups =
-        typeof Path2D === "undefined"
-          ? []
-          : Array.from({ length: 6 }, () => new Path2D());
+      const shimmerGroups = shimmerLayers.map(() => new Path2D());
 
       for (const cell of cells) {
         const { x, y, luminance, alpha, threshold } = cell;
@@ -271,6 +264,18 @@ export function CreationArtwork() {
         }
       }
       pixelContext.globalAlpha = 1;
+      for (const [group, layer] of shimmerLayers.entries()) {
+        const path = shimmerGroups[group];
+        if (!path) continue;
+        layer.width = bufferWidth;
+        layer.height = bufferHeight;
+        const context = layer.getContext("2d");
+        if (!context) continue;
+        context.setTransform(dpr * scale, 0, 0, dpr * scale, 0, 0);
+        context.imageSmoothingEnabled = false;
+        context.clip(path);
+        context.drawImage(pixels, 0, 0, width, height);
+      }
       ready = true;
       paint();
       root.dataset.ready = "true";
