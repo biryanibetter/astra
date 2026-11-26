@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 import type Lenis from "lenis";
 
 for (const motion of ["no-preference", "reduce"] as const) {
-  test(`Lenis uses its default wheel physics with ${motion}`, async ({
+  test(`Lenis uses Astra's wheel settings with ${motion}`, async ({
     isMobile,
     page,
   }) => {
@@ -14,13 +14,19 @@ for (const motion of ["no-preference", "reduce"] as const) {
         if (!lenis?.time) return null;
         return {
           lerp: lenis.options.lerp,
+          smoothWheel: lenis.options.smoothWheel,
+          wheelMultiplier: lenis.options.wheelMultiplier,
+          syncTouch: lenis.options.syncTouch,
           autoRaf: lenis.options.autoRaf,
           reduced: lenis.prefersReducedMotion,
         };
       });
     const review = process.env.ASTRA_REVIEW_SMOOTH_SCROLL === "true";
     await expect.poll(readLenis).toEqual({
-      lerp: 0.1,
+      lerp: 0.065,
+      smoothWheel: true,
+      wheelMultiplier: 1,
+      syncTouch: false,
       autoRaf: false,
       reduced: !review && motion === "reduce",
     });

@@ -15,6 +15,10 @@ const reviewSmoothing =
   ["127.0.0.1", "localhost", "[::1]"].includes(window.location.hostname);
 
 const options: LenisOptions = {
+  lerp: 0.065,
+  smoothWheel: true,
+  wheelMultiplier: 1,
+  syncTouch: false,
   autoRaf: false,
   allowNestedScroll: true,
   anchors: false,

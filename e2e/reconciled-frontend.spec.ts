@@ -149,7 +149,7 @@ test("wheel scrolling reaches its target after a blocked frame", async ({
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(320);
 });
 
-test("consecutive wheel inputs follow the default Lenis curve", async ({
+test("consecutive wheel inputs follow the weighted Lenis curve", async ({
   page,
   isMobile,
 }) => {
@@ -212,7 +212,7 @@ test("consecutive wheel inputs follow the default Lenis curve", async ({
   const [later] = gains(240);
   if (early === undefined || later === undefined)
     throw new Error("Expected consecutive animation frames for both inputs");
-  expect(early).toBeCloseTo(0.006, 5);
+  expect(early).toBeCloseTo(0.0039, 5);
   expect(later).toBeCloseTo(early, 5);
   await page.clock.runFor(1800);
   expect(await page.evaluate(() => scrollY)).toBe(240);
