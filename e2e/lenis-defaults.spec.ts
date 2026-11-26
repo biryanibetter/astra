@@ -21,51 +21,21 @@ for (const motion of ["no-preference", "reduce"] as const) {
           reduced: lenis.prefersReducedMotion,
         };
       });
-    const review = process.env.ASTRA_REVIEW_SMOOTH_SCROLL === "true";
     await expect.poll(readLenis).toEqual({
       lerp: 0.065,
       smoothWheel: true,
       wheelMultiplier: 1,
       syncTouch: false,
       autoRaf: false,
-      reduced: !review && motion === "reduce",
+      reduced: false,
     });
+    await expect(
+      page.getByRole("checkbox", { name: "Use full smooth scrolling" }),
+    ).toHaveCount(0);
     // The exact wheel delta is a desktop check; mobile swipe is tested separately.
-    if (isMobile || (!review && motion === "reduce")) return;
+    if (isMobile) return;
     await page.mouse.move(12, 140);
     await page.mouse.wheel(0, 320);
     await expect.poll(() => page.evaluate(() => scrollY)).toBe(320);
   });
 }
-
-test("the site can opt into full smooth scrolling and restore the device preference", async ({
-  page,
-}) => {
-  test.skip(
-    process.env.ASTRA_REVIEW_SMOOTH_SCROLL === "true",
-    "The loopback review build already overrides reduced motion.",
-  );
-  await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.goto("/");
-  const reduced = () =>
-    page.evaluate(
-      () =>
-        (window as Window & { __LENIS__?: Lenis }).__LENIS__
-          ?.prefersReducedMotion,
-    );
-  await expect.poll(reduced).toBe(true);
-  const preference = page.getByRole("checkbox", {
-    name: "Use full smooth scrolling",
-  });
-  await expect(preference).not.toBeChecked();
-  await preference.check();
-  await expect.poll(reduced).toBe(false);
-  await page.reload();
-  await expect(preference).toBeChecked();
-  await expect.poll(reduced).toBe(false);
-  await preference.uncheck();
-  await expect.poll(reduced).toBe(true);
-  await page.reload();
-  await expect(preference).not.toBeChecked();
-  await expect.poll(reduced).toBe(true);
-});

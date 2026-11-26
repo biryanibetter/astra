@@ -14,6 +14,7 @@ export default defineConfig({
     "reconciled-frontend.spec.ts",
     "cloudflare-runtime.spec.ts",
     "home-map-preparation.spec.ts",
+    "lenis-defaults.spec.ts",
   ],
   outputDir: ".test-output/cloudflare/results",
   use: { ...base.use, baseURL },

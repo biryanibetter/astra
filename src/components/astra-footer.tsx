@@ -1,7 +1,6 @@
 "use client";
 
 import { AstraLogo } from "@/components/site";
-import { SmoothScrollPreference } from "@/components/smooth-scroll-provider";
 import HalftoneWordmarkFooter, {
   type FooterColumn,
 } from "@/components/ui/halftone-wordmark-footer";
@@ -47,12 +46,9 @@ export default function AstraFooter() {
       }
       utilityBelowArtwork
       utility={
-        <>
-          <p className={styles.copyright}>
-            © 2026 ASTRA Youth Innovation Network
-          </p>
-          <SmoothScrollPreference className={styles.scrollPreference ?? ""} />
-        </>
+        <p className={styles.copyright}>
+          © 2026 ASTRA Youth Innovation Network
+        </p>
       }
       palette={{ background: "#030405", ink: "#f5f6f8", warm: "#c6ccd5" }}
       fontFamily="Inter, sans-serif"

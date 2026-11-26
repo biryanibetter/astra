@@ -233,15 +233,11 @@ test("only nearby cinematic surfaces request compositor layers", async ({
   await expect(reel).not.toHaveCSS("will-change", "transform");
 });
 
-test("Lenis respects reduced motion outside the local review build", async ({
+test("keyboard page scrolling works with Lenis under reduced motion", async ({
   page,
   isMobile,
 }) => {
   test.skip(isMobile, "Uses desktop wheel and keyboard input.");
-  test.skip(
-    process.env.ASTRA_REVIEW_SMOOTH_SCROLL === "true",
-    "The explicit local review build keeps smoothing enabled.",
-  );
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
   await page.waitForFunction(
@@ -251,7 +247,7 @@ test("Lenis respects reduced motion outside the local review build", async ({
     await page.evaluate(
       () => (window as ScrollTestWindow).__LENIS__?.prefersReducedMotion,
     ),
-  ).toBe(true);
+  ).toBe(false);
   await page.mouse.move((page.viewportSize()?.width ?? 800) / 2, 160);
   await page.mouse.wheel(0, 120);
   await expect.poll(() => page.evaluate(() => scrollY)).toBe(120);

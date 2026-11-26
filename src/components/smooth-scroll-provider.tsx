@@ -6,15 +6,8 @@ import type Lenis from "lenis";
 import type { LenisOptions } from "lenis";
 import { ReactLenis, useLenis } from "lenis/react";
 import { usePathname, useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef } from "react";
 import "lenis/dist/lenis.css";
-
-const reviewSmoothing =
-  process.env.NEXT_PUBLIC_ASTRA_REVIEW_SMOOTH_SCROLL === "true" &&
-  typeof window !== "undefined" &&
-  ["127.0.0.1", "localhost", "[::1]"].includes(window.location.hostname);
-
-const scrollPreferenceKey = "astra:full-smooth-scrolling";
 
 const options: LenisOptions = {
   lerp: 0.065,
@@ -25,7 +18,7 @@ const options: LenisOptions = {
   allowNestedScroll: true,
   anchors: false,
   stopInertiaOnNavigate: true,
-  respectReducedMotion: !reviewSmoothing,
+  respectReducedMotion: false,
   // Local galleries/chapter interactions may already own a bubbling event.
   // Lenis 1.3.27 does not check defaultPrevented itself. Never rewrite deltas.
   virtualScroll: ({ event }) => !event.defaultPrevented,
@@ -177,47 +170,4 @@ export function SmoothScrollProvider({
 
 export function useSmoothScroll() {
   return useLenis();
-}
-
-export function SmoothScrollPreference({ className }: { className?: string }) {
-  const lenis = useSmoothScroll();
-  const [enabled, setEnabled] = useState(false);
-  const [ready, setReady] = useState(false);
-
-  useEffect(() => {
-    if (!lenis) return;
-    let saved = false;
-    try {
-      saved = localStorage.getItem(scrollPreferenceKey) === "true";
-    } catch {
-      // The preference can still be changed for the current page.
-    }
-    // Lenis 1.3.27 reads this option on each scroll. Keep the root instance and clock.
-    lenis.options.respectReducedMotion = !reviewSmoothing && !saved;
-    setEnabled(saved);
-    setReady(true);
-  }, [lenis]);
-
-  return (
-    <label className={className}>
-      <input
-        type="checkbox"
-        checked={enabled}
-        disabled={!ready || !lenis}
-        onChange={(event) => {
-          if (!lenis) return;
-          const checked = event.currentTarget.checked;
-          lenis.options.respectReducedMotion = !reviewSmoothing && !checked;
-          setEnabled(checked);
-          try {
-            if (checked) localStorage.setItem(scrollPreferenceKey, "true");
-            else localStorage.removeItem(scrollPreferenceKey);
-          } catch {
-            // The current page still reflects the user's choice.
-          }
-        }}
-      />
-      Use full smooth scrolling
-    </label>
-  );
 }

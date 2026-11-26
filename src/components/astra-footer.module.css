@@ -136,25 +136,6 @@
   width: 100%;
   min-height: 54px;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 0 16px;
-}
-
-.scrollPreference {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 32px;
-  color: #c3c8d0;
-  font:
-    400 13px / 1.5 Inter,
-    sans-serif;
-  text-transform: none;
-  cursor: pointer;
-}
-
-.scrollPreference input {
-  accent-color: #c3c8d0;
 }
 
 .copyright {
