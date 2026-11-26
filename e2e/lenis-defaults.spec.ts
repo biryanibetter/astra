@@ -37,3 +37,35 @@ for (const motion of ["no-preference", "reduce"] as const) {
     await expect.poll(() => page.evaluate(() => scrollY)).toBe(320);
   });
 }
+
+test("the site can opt into full smooth scrolling and restore the device preference", async ({
+  page,
+}) => {
+  test.skip(
+    process.env.ASTRA_REVIEW_SMOOTH_SCROLL === "true",
+    "The loopback review build already overrides reduced motion.",
+  );
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+  const reduced = () =>
+    page.evaluate(
+      () =>
+        (window as Window & { __LENIS__?: Lenis }).__LENIS__
+          ?.prefersReducedMotion,
+    );
+  await expect.poll(reduced).toBe(true);
+  const preference = page.getByRole("checkbox", {
+    name: "Use full smooth scrolling",
+  });
+  await expect(preference).not.toBeChecked();
+  await preference.check();
+  await expect.poll(reduced).toBe(false);
+  await page.reload();
+  await expect(preference).toBeChecked();
+  await expect.poll(reduced).toBe(false);
+  await preference.uncheck();
+  await expect.poll(reduced).toBe(true);
+  await page.reload();
+  await expect(preference).not.toBeChecked();
+  await expect.poll(reduced).toBe(true);
+});
