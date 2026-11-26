@@ -113,5 +113,7 @@ Public push is blocked by unconfirmed redistribution permissions for
 `src/data/qatar-schools.json` (see `qatar-schools-manifest.json`, `rights`).
 These files are already present in the independent repository's initial commit;
 deleting them from the latest tree would not exclude them from a public push.
-Publication requires confirmed rights or an explicitly approved history-clean
-export excluding them. The existing history and local assets are preserved.
+Under the default policy, publication requires confirmed rights or an explicitly
+approved history-clean export excluding those files. See the
+[Lenis 0.065 release exception and licensing status](docs/release-licensing.md)
+for the authorized update to the existing public deployment.
