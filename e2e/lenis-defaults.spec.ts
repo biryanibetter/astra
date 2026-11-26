@@ -3,6 +3,7 @@ import type Lenis from "lenis";
 
 for (const motion of ["no-preference", "reduce"] as const) {
   test(`Lenis uses its default wheel physics with ${motion}`, async ({
+    isMobile,
     page,
   }) => {
     await page.emulateMedia({ reducedMotion: motion });
@@ -23,7 +24,8 @@ for (const motion of ["no-preference", "reduce"] as const) {
       autoRaf: false,
       reduced: !review && motion === "reduce",
     });
-    if (!review && motion === "reduce") return;
+    // The exact wheel delta is a desktop check; mobile swipe is tested separately.
+    if (isMobile || (!review && motion === "reduce")) return;
     await page.mouse.move(12, 140);
     await page.mouse.wheel(0, 320);
     await expect.poll(() => page.evaluate(() => scrollY)).toBe(320);

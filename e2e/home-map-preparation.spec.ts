@@ -1,4 +1,5 @@
 import { expect, type Page, test } from "@playwright/test";
+import type Lenis from "lenis";
 
 async function approachMap(page: Page) {
   await page.waitForFunction(() => "__LENIS__" in window);
@@ -43,7 +44,13 @@ test("menu and scrolling remain available while the map is preparing", async ({
     await expect(
       page.getByRole("button", { name: "Menu", exact: true }),
     ).toBeVisible();
+    // The closing animation keeps the scroll lock after the trigger returns.
+    await page.waitForFunction(() => {
+      const lenis = (window as Window & { __LENIS__?: Lenis }).__LENIS__;
+      return lenis?.isStopped === false;
+    });
     const beforeWheel = await page.evaluate(() => window.scrollY);
+    await page.mouse.move(15, 160);
     await page.mouse.wheel(0, 500);
     await expect
       .poll(() => page.evaluate(() => window.scrollY))
