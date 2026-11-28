@@ -162,7 +162,7 @@ export function ReviewStep({
         className={`${styles.overview} ${isComplete ? styles.overviewComplete : ""}`}
       >
         {/* Animated glass border - runs even with reduced-motion preference per design requirements */}
-        {isComplete && <ShinyPerimeter />}
+        {isComplete && <ShinyPerimeter respectReducedMotion />}
         <div className={styles.overviewIdentity}>
           <div className={styles.avatar} aria-hidden="true">
             {initials || "A"}
