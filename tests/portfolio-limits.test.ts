@@ -67,13 +67,13 @@ describe("supporting link validation", () => {
     );
   });
 
-  it("rejects saved links that are empty or unsafe", () => {
+  it("ignores empty entries and rejects unsafe links", () => {
     expect(
       isPortfolioValid({
         ...emptyPortfolioData,
         links: [{ id: "one", type: "Portfolio", label: "", url: "" }],
       }),
-    ).toBe(false);
+    ).toBe(true);
     expect(
       isPortfolioValid({
         ...emptyPortfolioData,
@@ -89,8 +89,8 @@ describe("supporting link validation", () => {
     ).toBe(false);
   });
 
-  it("rejects an otherwise empty portfolio even with a valid link", () => {
-    expect(isPortfolioValid(emptyPortfolioData)).toBe(false);
+  it("accepts an empty portfolio with or without a valid link", () => {
+    expect(isPortfolioValid(emptyPortfolioData)).toBe(true);
     expect(
       isPortfolioValid({
         ...emptyPortfolioData,
@@ -103,7 +103,7 @@ describe("supporting link validation", () => {
           },
         ],
       }),
-    ).toBe(false);
+    ).toBe(true);
   });
 });
 

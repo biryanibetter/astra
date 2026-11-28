@@ -191,10 +191,11 @@
     Inter,
     sans-serif;
   letter-spacing: -0.04em;
+  text-wrap: balance;
 }
 
 .caption p {
-  max-width: 28ch;
+  max-width: 36ch;
   margin: 0;
   color: #e0e4e9;
   font:

@@ -21,6 +21,7 @@ export interface HoverPreviewProps {
 interface HoverLinkProps {
   readonly children: React.ReactNode;
   readonly disciplineId: string;
+  readonly isExpanded: boolean;
   readonly onActivate: (
     id: string,
     event:
@@ -54,16 +55,13 @@ function calculatePosition(
   viewportHeight: number,
 ): { x: number; y: number } {
   // Default: position card above and centered on cursor
-  let x = clientX - CARD_WIDTH / 2;
+  const width = Math.min(CARD_WIDTH, viewportWidth);
+  const margin = Math.min(VIEWPORT_MARGIN, (viewportWidth - width) / 2);
+  const x = Math.max(
+    margin,
+    Math.min(clientX - width / 2, viewportWidth - width - margin),
+  );
   let y = clientY - CARD_HEIGHT - CURSOR_OFFSET_Y;
-
-  // Horizontal bounds
-  if (x + CARD_WIDTH > viewportWidth - VIEWPORT_MARGIN) {
-    x = viewportWidth - CARD_WIDTH - VIEWPORT_MARGIN;
-  }
-  if (x < VIEWPORT_MARGIN) {
-    x = VIEWPORT_MARGIN;
-  }
 
   // Vertical bounds - if card would go above viewport, position below cursor instead
   if (y < VIEWPORT_MARGIN) {
@@ -80,6 +78,7 @@ function calculatePosition(
 export function HoverLink({
   children,
   disciplineId,
+  isExpanded,
   onActivate,
   onDeactivate,
   onPositionUpdate,
@@ -143,8 +142,8 @@ export function HoverLink({
   return (
     <button
       type="button"
-      aria-expanded="false"
-      aria-controls="hover-preview-card"
+      aria-expanded={isExpanded}
+      aria-controls={isExpanded ? "hover-preview-card" : undefined}
       onPointerEnter={handlePointerEnter}
       onPointerMove={handlePointerMove}
       onPointerLeave={onDeactivate}
@@ -210,7 +209,7 @@ export function PreviewCard({
         style={{
           borderRadius: "8px",
           padding: "8px",
-          width: `${CARD_WIDTH}px`,
+          width: `min(${CARD_WIDTH}px, 100vw)`,
           background: `radial-gradient(ellipse at 70% 0%, ${discipline.color}80, transparent 75%), var(--bg-secondary)`,
           position: "relative",
         }}
@@ -234,7 +233,7 @@ export function PreviewCard({
               borderRadius: "4px",
               display: "block",
             }}
-            loading="lazy"
+            loading="eager"
             referrerPolicy="no-referrer"
           />
         </div>
@@ -242,9 +241,11 @@ export function PreviewCard({
           style={{
             fontSize: "16px",
             fontWeight: 600,
+            lineHeight: 1.2,
+            letterSpacing: "-0.01em",
             textTransform: "capitalize",
-            padding: "12px 8px 5px",
-            margin: "0 0 8px",
+            padding: "10px 12px 0",
+            margin: "0 0 5px",
             color: "white",
           }}
         >
@@ -253,9 +254,12 @@ export function PreviewCard({
         <span
           style={{
             fontSize: "13px",
-            color: "var(--muted)",
+            fontWeight: 400,
+            lineHeight: 1.45,
+            letterSpacing: "0.005em",
+            color: "var(--text-secondary)",
             display: "block",
-            padding: "0 8px 8px",
+            padding: "0 12px 9px",
           }}
         >
           {discipline.copy}
@@ -420,6 +424,7 @@ export function HoverPreview({
             {index === disciplines.length - 1 ? "and " : ""}
             <HoverLink
               disciplineId={discipline.id}
+              isExpanded={isVisible && activeDiscipline?.id === discipline.id}
               onActivate={handleActivate}
               onDeactivate={handleDeactivate}
               onPositionUpdate={handlePositionUpdate}

@@ -3,7 +3,7 @@
 import gsap from "gsap";
 import { CustomEase } from "gsap/CustomEase";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   useCallback,
   useEffect,
@@ -15,11 +15,12 @@ import { useSmoothScroll } from "@/components/smooth-scroll-provider";
 import { getReducedMotion, subscribeMotion } from "@/lib/motion-preference";
 import "./sterling-gate-kinetic-navigation.css";
 
+const experiencesHref = "/#events";
 const links = [
   { href: "/", label: "Home", shape: 1 },
   { href: "/the-idea", label: "The Idea", shape: 2 },
   { href: "/#schools-heading", label: "Get Involved", shape: 3 },
-  { href: "/whats-next", label: "What's Next", shape: 4 },
+  { href: experiencesHref, label: "What's Next", shape: 4 },
 ] as const;
 
 // Coordinates and paths from the supplied Sterling Gate SVGs (not replacement artwork).
@@ -92,12 +93,14 @@ export function SterlingGateKineticNavigation({
   readonly reference?: boolean;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [isPresent, setIsPresent] = useState(false);
   const [canGoBack, setCanGoBack] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const desiredOpenRef = useRef(false);
+  const pendingExperiencesNavigation = useRef(false);
   const animateMenuRef = useRef<((open: boolean) => void) | null>(null);
 
   useEffect(() => {
@@ -112,7 +115,10 @@ export function SterlingGateKineticNavigation({
   const toggleMenu = () => {
     const open = !desiredOpenRef.current;
     desiredOpenRef.current = open;
-    if (open) setIsPresent(true);
+    if (open) {
+      pendingExperiencesNavigation.current = false;
+      setIsPresent(true);
+    }
     setIsOpen(open);
   };
 
@@ -575,6 +581,12 @@ export function SterlingGateKineticNavigation({
     };
   }, [closeMenu, isPresent, lenis]);
 
+  useEffect(() => {
+    if (isPresent || !pendingExperiencesNavigation.current) return;
+    pendingExperiencesNavigation.current = false;
+    router.push(experiencesHref);
+  }, [isPresent, router]);
+
   return (
     // biome-ignore lint/a11y/useAriaPropsSupportedByRole: aria-modal is present only together with role="dialog" while open.
     <div
@@ -799,6 +811,7 @@ export function SterlingGateKineticNavigation({
               type="button"
               aria-label="Back to previous page"
               onClick={() => {
+                pendingExperiencesNavigation.current = false;
                 if (window.history.length > 1) {
                   window.history.back();
                 }
@@ -833,6 +846,15 @@ export function SterlingGateKineticNavigation({
                     href={link.href}
                     aria-current={pathname === link.href ? "page" : undefined}
                     onClick={closeMenu}
+                    onNavigate={(event) => {
+                      const waitForClose =
+                        link.href === experiencesHref && pathname !== "/";
+                      pendingExperiencesNavigation.current = waitForClose;
+                      if (!waitForClose) return;
+                      // Let the closing menu release its scroll lock before
+                      // Next positions the destination fragment.
+                      event.preventDefault();
+                    }}
                   >
                     <span className="nav-link-text">{link.label}</span>
                     <div className="nav-link-hover-bg" aria-hidden="true" />

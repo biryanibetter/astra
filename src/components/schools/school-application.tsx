@@ -124,9 +124,9 @@ export function SchoolApplication({
           Thanks for reaching out.
         </h2>
         <p>
-          Your application was received. This is not automatic membership
-          approval; guardian authorization and safeguarding arrangements are
-          handled separately before participation where required.
+          Your application was received. This does not confirm participation.
+          Guardian authorization and safeguarding arrangements are handled
+          separately before participation where required.
         </p>
         <Link
           className="school-action secondary"

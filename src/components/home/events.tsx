@@ -1,52 +1,59 @@
 "use client";
 
 import type { CSSProperties } from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { WordRevealHeading } from "@/components/ui/word-reveal-heading";
 import styles from "./events.module.css";
 
 const experiences = [
   {
-    title: "Astra Launch Night",
-    category: "Flagship Event",
+    id: "gatherings",
+    title: "Events & Gatherings",
+    category: "Flagship Experiences",
     description:
-      "A first gathering bringing ambitious young people across Qatar together.",
+      "Bringing students across schools together through shared experiences.",
     detail:
-      "A welcoming first gathering for ambitious young people to meet one another, discover Astra, and imagine what they could build together. This experience is a concept and is not scheduled.",
-    image: "/images/experiences/launch-night.jpg",
+      "From youth festivals to cross-school gatherings, Astra aims to organize experiences where students can discover new interests, exchange perspectives and form meaningful connections beyond their schools.",
+    image: "/images/home-stock/gatherings.webp",
   },
   {
-    title: "Build & Learn",
-    category: "Workshops",
+    id: "workshops",
+    title: "Workshops & Hackathons",
+    category: "Hands-on Experiences",
     description:
-      "Hands-on experiences in technology, AI, business, design and more.",
+      "Collaborative challenges that bring different skills and ideas together.",
     detail:
-      "Practical, collaborative workshop concepts spanning technology, AI, business, design and more. Topics and formats are still in development.",
+      "Through interactive workshops, hackathons and team-based challenges, Astra aims to encourage students to experiment, solve problems and develop ideas alongside peers from different disciplines.",
     image: "/images/experiences/build-learn.jpg",
   },
   {
+    id: "conversations",
     title: "Real Conversations",
     category: "Speaker Sessions",
-    description: "Conversations with founders, industry leaders and creators.",
+    description:
+      "Conversations with founders, researchers, industry leaders and creators.",
     detail:
-      "A proposed series of thoughtful conversations with founders, industry leaders and creators. No speakers or dates have been confirmed.",
+      "An opportunity to engage with people from different professional backgrounds, ask meaningful questions and gain perspectives that extend beyond conventional classroom learning.",
     image: "/images/experiences/conversations.jpg",
   },
   {
-    title: "Ideas in Action",
-    category: "Student Showcase",
-    description: "Student projects, teams and ideas from across Qatar.",
+    id: "showcases",
+    title: "Innovation Showcases",
+    category: "Exhibitions & Competitions",
+    description:
+      "A platform for student research, inventions, projects and emerging ideas.",
     detail:
-      "A concept for celebrating student projects, teams and ideas from across Qatar. Participation and event details will be shared when confirmed.",
-    image: "/images/experiences/ideas-action.jpg",
+      "Astra aims to develop exhibitions and competitions where students can present their work, demonstrate their ideas, exchange constructive feedback and engage with a wider community of innovators.",
+    image: "/images/home-stock/showcases.webp",
   },
-] as const;
+].map((item) => ({ ...item, detailWords: item.detail.split(" ") }));
 
 export function EventsTimeline() {
   const [active, setActive] = useState<number | null>(null);
   const cardPreviews = useRef<(HTMLDivElement | null)[]>([]);
   const railRef = useRef<HTMLDivElement>(null);
   const activeRef = useRef<number | null>(null);
+  const selection = useRef<number | null>(null);
   const lastPointer = useRef<{ x: number; y: number } | null>(null);
   const touchStart = useRef<{ x: number; y: number } | null>(null);
   const [ready, setReady] = useState(false);
@@ -62,9 +69,8 @@ export function EventsTimeline() {
       const preview = cardPreviews.current[index];
       const copy = preview?.querySelector<HTMLElement>(`.${styles.cardCopy}`);
       if (copy && preview) {
-        // Cache both endpoints on real container/font changes, never on hover
-        // or while the individual cards are resizing. Keep the title line box
-        // stable so the primary description cannot jump when its text reflows.
+        // Cache both endpoints on container/font changes, never on hover.
+        // Only reserve the wrapped title height in the collapsed layout.
         const desktop = window.innerWidth > 1000;
         const defaultWidth = desktop
           ? (rail.clientWidth - 36) / 4 - 40
@@ -87,10 +93,6 @@ export function EventsTimeline() {
         const titleHeight =
           measurement.querySelector("strong")?.getBoundingClientRect().height ??
           0;
-        measurement.style.setProperty(
-          "--copy-title-height",
-          `${titleHeight}px`,
-        );
         measurement.style.width = `${width}px`;
         const lift = Math.max(
           0,
@@ -126,20 +128,40 @@ export function EventsTimeline() {
     };
   }, [measureCopies]);
 
-  function activate(index: number | null) {
+  const activate = useCallback((index: number | null) => {
     if (activeRef.current === index) return;
     activeRef.current = index;
     setActive(index);
+  }, []);
+
+  function select(index: number | null) {
+    selection.current = index;
+    activate(index);
   }
 
-  // Split detail text into words for word-by-word reveal
-  const getDetailWords = (text: string) => text.split(" ");
+  useEffect(() => {
+    const clearHover = () => {
+      lastPointer.current = null;
+      touchStart.current = null;
+      activate(selection.current);
+    };
+    const onVisibilityChange = () => {
+      if (document.hidden) clearHover();
+    };
+    window.addEventListener("blur", clearHover);
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    return () => {
+      window.removeEventListener("blur", clearHover);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+    };
+  }, [activate]);
 
   return (
     <section
       id="events"
       className={styles.section}
       aria-labelledby="events-heading"
+      tabIndex={-1}
     >
       <div className={styles.heading}>
         <div>
@@ -148,13 +170,14 @@ export function EventsTimeline() {
             as="h2"
             id="events-heading"
             className={`${styles.title} display`}
-            text="Our experiences that bring Qatar's innovators together."
-            breakAfter={3}
+            text="Creating opportunities. Connecting possibilities."
+            breakAfter={2}
             breakClassName={styles.desktopBreak}
           />
           <p className={styles.intro} data-reveal="fade-up">
-            From large-scale events to intimate workshops, Astra creates
-            experiences where ambitious students meet, learn and build.
+            From cross-school gatherings to collaborative projects and
+            conversations, Astra aims to create opportunities for students to
+            connect, contribute and pursue their interests together.
           </p>
         </div>
       </div>
@@ -169,6 +192,8 @@ export function EventsTimeline() {
         onPointerMove={(event) => {
           if (
             event.pointerType === "touch" ||
+            document.hidden ||
+            !document.hasFocus() ||
             window.innerWidth <= 1000 ||
             !window.matchMedia("(hover: hover)").matches
           )
@@ -195,28 +220,23 @@ export function EventsTimeline() {
             event.clientY <= bounds.bottom
           )
             return;
-          const focusedElement = document.activeElement;
-          if (
-            focusedElement instanceof HTMLElement &&
-            railRef.current?.contains(focusedElement) &&
-            focusedElement.matches(":focus-visible")
-          )
-            return;
           lastPointer.current = null;
-          activate(null);
+          activate(selection.current);
         }}
         onBlur={(event) => {
-          if (!event.currentTarget.contains(event.relatedTarget))
-            activate(null);
+          if (
+            event.relatedTarget &&
+            !event.currentTarget.contains(event.relatedTarget)
+          )
+            select(null);
         }}
       >
         {experiences.map((item, index) => {
-          const detailWords = getDetailWords(item.detail);
           const isActive = index === active;
 
           return (
             <article
-              key={item.title}
+              key={item.id}
               className={styles.card}
               data-reveal="fade-up"
               data-active={isActive}
@@ -248,7 +268,7 @@ export function EventsTimeline() {
                     !touchStart.current &&
                     event.currentTarget.matches(":focus-visible")
                   )
-                    activate(index);
+                    select(index);
                 }}
                 onPointerDown={(event) => {
                   if (event.pointerType !== "mouse")
@@ -264,7 +284,7 @@ export function EventsTimeline() {
                       event.clientY - start.y,
                     ) < 12
                   ) {
-                    activate(activeRef.current === index ? null : index);
+                    select(selection.current === index ? null : index);
                   }
                 }}
                 onPointerCancel={() => {
@@ -273,7 +293,7 @@ export function EventsTimeline() {
                 onKeyDown={(event) => {
                   if (["Escape", "Enter", " "].includes(event.key)) {
                     event.preventDefault();
-                    activate(
+                    select(
                       event.key === "Escape" || activeRef.current === index
                         ? null
                         : index,
@@ -296,7 +316,7 @@ export function EventsTimeline() {
                             (event.key === "ArrowRight" ? 1 : -1) +
                             experiences.length) %
                           experiences.length;
-                  activate(next);
+                  select(next);
                   cardPreviews.current[next]?.focus();
                 }}
               >
@@ -313,19 +333,23 @@ export function EventsTimeline() {
                       data-experience-detail
                       aria-hidden={!isActive}
                     >
-                      {detailWords.map((word, wordIndex) => (
-                        <span
+                      {item.detailWords.map((word, wordIndex) => (
+                        <Fragment
                           // biome-ignore lint/suspicious/noArrayIndexKey: Static words never reorder.
                           key={wordIndex}
-                          style={
-                            {
-                              "--detail-enter-delay": `${wordIndex * Math.min(25, 320 / Math.max(1, detailWords.length - 1))}ms`,
-                              "--detail-exit-delay": `${wordIndex * Math.min(12, 140 / Math.max(1, detailWords.length - 1))}ms`,
-                            } as CSSProperties
-                          }
                         >
-                          {word}{" "}
-                        </span>
+                          {wordIndex > 0 ? " " : null}
+                          <span
+                            style={
+                              {
+                                "--word-progress":
+                                  wordIndex / (item.detailWords.length - 1),
+                              } as CSSProperties
+                            }
+                          >
+                            {word}
+                          </span>
+                        </Fragment>
                       ))}
                     </span>
                   </div>

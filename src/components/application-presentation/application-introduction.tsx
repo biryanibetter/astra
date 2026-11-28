@@ -12,56 +12,72 @@ type Track = "core" | "fellow";
 
 const content = {
   core: {
-    heading: "Your role in Astra",
-    headingPhrases: ["Your role in Astra"],
+    heading: "Be part of the team.",
     description:
-      "Bring your ideas to events, projects, technology, media, partnerships, and the school network, and help shape what Astra becomes.",
+      "Contribute your skills, perspectives and ideas to the development of Astra, working alongside students who share the responsibility of building the organization.",
     slides: [
       {
-        title: "Events that bring people together",
+        title: "Behind the scenes.",
         description:
-          "Create the moments where new connections and ideas begin.",
-        image: "/images/experiences/launch-night.jpg",
-        alt: "Students gathered at an evening event",
+          "Help plan, coordinate and deliver the initiatives that bring Astra to life.",
+        image: "/images/home-stock/business.webp",
+        alt: "Students discussing a project together",
       },
       {
-        title: "Projects built as a team",
+        title: "From concept to reality.",
         description:
-          "Turn a promising thought into something others can explore.",
+          "Develop new ideas and contribute to projects from their earliest stages through execution.",
         image: "/images/experiences/build-learn.jpg",
         alt: "Students collaborating during a hands-on workshop",
       },
       {
-        title: "Ideas put into action",
-        description: "Help students across Qatar share what they are making.",
-        image: "/images/experiences/ideas-action.jpg",
-        alt: "A student project showcase",
+        title: "Building connections.",
+        description:
+          "Help strengthen the school network and develop relationships across the wider community.",
+        image: "/images/home-stock/faq-gathering.webp",
+        alt: "Students in conversation",
+      },
+      {
+        title: "Make your skills count.",
+        description:
+          "Contribute through technology, design, media, communications and other areas of expertise.",
+        image: "/images/home-stock/technology.webp",
+        alt: "Students working on robotics together",
       },
     ],
   },
   fellow: {
-    heading: "Your project at Astra",
-    headingPhrases: ["Your project at Astra"],
+    heading: "Your project at Astra.",
     description:
-      "Bring your independent project, research, or initiative into a community that can help you move it forward.",
+      "Develop your own ideas, research, initiatives and creative work with the support of a wider student network.",
     slides: [
       {
-        title: "Projects with purpose",
-        description: "Shape an early idea into work you can test and share.",
-        image: "/images/experiences/ideas-action.jpg",
-        alt: "A student project showcase",
+        title: "Start with an idea.",
+        description:
+          "Bring forward an idea, concept or early project you want to explore and develop further.",
+        image: "/images/home-stock/faq-teamwork.webp",
+        alt: "Students working together on an early STEM project",
       },
       {
-        title: "Make, test, learn",
-        description: "Build your next step through practical experimentation.",
-        image: "/images/experiences/build-learn.jpg",
-        alt: "Students collaborating during a hands-on workshop",
+        title: "Go deeper.",
+        description:
+          "Pursue research questions, investigations and areas of curiosity that deserve more time, structure and focus.",
+        image: "/images/home-stock/science.webp",
+        alt: "Students working in a science laboratory",
       },
       {
-        title: "Find a wider perspective",
-        description: "Connect your work with new questions and conversations.",
-        image: "/images/experiences/conversations.jpg",
-        alt: "A speaker sharing ideas with a student audience",
+        title: "Build independently.",
+        description:
+          "Develop ventures, initiatives or long-term projects that can grow beyond a single competition or event.",
+        image: "/images/home-stock/design.webp",
+        alt: "Students developing a creative design project",
+      },
+      {
+        title: "Take your work further.",
+        description:
+          "Use your skills and ambition to create work that contributes to your school, your community and the wider student landscape.",
+        image: "/images/home-stock/showcases.webp",
+        alt: "A student presenting research at a science fair",
       },
     ],
   },
@@ -69,7 +85,6 @@ const content = {
   Track,
   {
     heading: string;
-    headingPhrases: readonly string[];
     description: string;
     slides: readonly Slide[];
   }
@@ -176,9 +191,7 @@ export function ApplicationIntroduction({
         data-reveal="image"
         className={styles.carousel}
         aria-roledescription="carousel"
-        aria-label={
-          track === "core" ? "Events and projects" : "Fellow projects"
-        }
+        aria-label={track === "core" ? "Core contributions" : "Fellow projects"}
       >
         <div className={styles.carouselStage} aria-live="polite">
           <AnimatePresence

@@ -11,9 +11,13 @@ it("offers optional portfolio entries, supporting links and local PDF documents"
     createElement(PortfolioBuilder, {
       value: emptyPortfolioData,
       onChange: () => {},
+      cvRequired: false,
+      attempted: false,
+      onLinkDraftInvalid: () => {},
     }),
   );
   expect(markup).toContain("Build your profile.");
+  expect(markup).toContain("PDF only, up to 5 MB. Optional.");
   expect(markup).toContain('type="file"');
   expect(markup.match(/type="file"/g)).toHaveLength(1);
   for (const feature of ["Add your first project", "Add your first link"]) {

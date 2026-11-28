@@ -1,0 +1,124 @@
+.intro {
+  padding-top: clamp(20px, 4svh, 56px);
+  text-align: center;
+}
+
+.heading {
+  font-family: var(--programs-heading-family);
+  font-size: min(var(--programs-heading-size), 7.8vw);
+  font-weight: var(--programs-heading-weight);
+  line-height: 1.04;
+  letter-spacing: var(--programs-heading-tracking);
+}
+
+.heading [data-shimmer-text] {
+  display: block;
+}
+
+.title {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(10px, 2vw, 24px);
+  margin: clamp(28px, 4.2vw, 56px) 0 0;
+  font-family: var(--programs-heading-family);
+  font-size: clamp(30px, 9vw, 108px);
+  font-weight: 800;
+  font-kerning: none;
+  font-variant-ligatures: none;
+}
+
+.measure {
+  position: absolute;
+  display: grid;
+  justify-items: start;
+  visibility: hidden;
+}
+
+.measure > * {
+  grid-area: 1 / 1;
+}
+
+.highlight {
+  box-sizing: border-box;
+  display: block;
+  overflow: hidden;
+  padding: 0.08em 0.28em;
+  border-radius: clamp(6px, 0.105em, 12px);
+  background: #e6e7e8;
+  color: #111214;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.title > .highlight {
+  flex: none;
+}
+
+.description {
+  display: grid;
+  align-items: center;
+  max-width: 27em;
+  margin: clamp(18px, 2.5vw, 30px) auto 0;
+  color: var(--silver, #c6ccd5);
+  font-size: clamp(16px, 2.2vw, 24px);
+  font-weight: 500;
+  line-height: 1.45;
+  text-wrap: balance;
+}
+
+/* Both descriptions size the same grid cell, including when the text wraps. */
+.description span {
+  grid-area: 1 / 1;
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.description span[data-active="true"] {
+  opacity: 1;
+}
+
+.progress {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 9px;
+  margin-top: clamp(16px, 2.3vw, 24px);
+}
+
+.progress span {
+  width: 6px;
+  height: 6px;
+  border-radius: 6px;
+  background: #5c5c5c;
+  transition:
+    width 180ms ease,
+    background-color 180ms ease;
+}
+
+.progress span[data-active="true"] {
+  width: 29px;
+  background: #e6e6e6;
+}
+
+[data-static="true"] .description span,
+[data-static="true"] .progress span {
+  transition: none;
+}
+
+.pathways {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  padding: 0;
+  margin: -1px;
+  clip-path: inset(50%);
+}
+
+@media (max-width: 560px) {
+  .heading {
+    font-size: clamp(21px, 6.7vw, 37px);
+  }
+}

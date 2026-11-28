@@ -1,5 +1,6 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import { useEffect, useRef } from "react";
 import {
   getReducedMotion,
@@ -8,7 +9,6 @@ import {
 import { orbitalBrands } from "./orbital-brands";
 import "./marquee-logo-scroller.css";
 
-/** Decorative demo artwork, never a sponsorship or partnership announcement. */
 export function MarqueeLogoScroller() {
   const viewportRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -199,27 +199,43 @@ export function MarqueeLogoScroller() {
         <div className="marquee-logo-track">
           {["first", "loop"].map((group) => (
             <div className="marquee-logo-group" key={group}>
-              {["a", "b"].flatMap((repeat) =>
-                orbitalBrands.map((brand) => (
-                  <div
-                    className="orbital-brand"
-                    key={`${repeat}-${brand.name}`}
+              {orbitalBrands.map((brand) => (
+                <div className="orbital-brand" key={brand.id}>
+                  <span className="orbital-brand-wash" />
+                  <span
+                    className="orbital-brand-art orbital-wordmark"
+                    style={
+                      {
+                        "--slot-advance": `${brand.advance}em`,
+                        "--slot-tracking": `${brand.letters * 0.6}px`,
+                      } as CSSProperties
+                    }
                   >
-                    <span className="orbital-brand-wash" />
-                    <span className="orbital-brand-art">
-                      <svg
-                        aria-hidden="true"
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
-                        focusable="false"
-                      >
-                        <path d={brand.path} />
-                      </svg>
-                      <span>{brand.name}</span>
+                    <span
+                      className={
+                        brand.artwork.kind === "invitation"
+                          ? "orbital-wordmark-ink orbital-invitation"
+                          : "orbital-wordmark-ink"
+                      }
+                    >
+                      {brand.artwork.kind === "invitation" && (
+                        <span className="orbital-wordmark-plus">
+                          <svg
+                            aria-hidden="true"
+                            viewBox="0 0 12 12"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                          >
+                            <path d="M2 6h8M6 2v8" />
+                          </svg>
+                        </span>
+                      )}
+                      {brand.artwork.name}
                     </span>
-                  </div>
-                )),
-              )}
+                  </span>
+                </div>
+              ))}
             </div>
           ))}
         </div>

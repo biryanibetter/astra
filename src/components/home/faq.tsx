@@ -1,30 +1,29 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 import { WordRevealHeading } from "@/components/ui/word-reveal-heading";
 import { ConceptCollage } from "./concept-collage";
 
 const questions = [
   {
-    q: "Who can join?",
-    a: "Students aged 13–18 in Qatar, from any school and with any interest, can express an interest in applying. Participation is subject to review and appropriate safeguarding and guardian authorization where required.",
+    q: "What are the requirements to join Astra?",
+    a: "Astra Core and Fellow are open to students aged 14–18 currently studying in Qatar, regardless of their school, nationality or curriculum. We value initiative, curiosity and a willingness to contribute, alongside any previous experience or achievements.",
   },
   {
-    q: "Do I need experience?",
-    a: "You do not need a polished CV to be curious. ASTRA Network is for connecting and exploring; ASTRA Core is an application interest for students who want to contribute to projects. Neither option guarantees membership.",
+    q: "What are the benefits of getting involved?",
+    a: "Astra aims to give students access to a wider network, collaborative projects, opportunities to develop their own initiatives and experiences beyond those available within their individual schools.",
   },
   {
-    q: "Who runs Astra?",
-    a: "Astra is student-led. Adult oversight, safeguarding responsibilities and participation arrangements must be confirmed before activities begin.",
+    q: "Are Astra events open to students from all schools?",
+    a: "Astra aims to welcome students from all schools across Qatar. Participation requirements may vary depending on the nature, format and capacity of each event.",
   },
   {
-    q: "Is it free?",
-    a: "Fees and any activity costs have not been confirmed. We will publish clear information before asking anyone to commit.",
+    q: "Does it cost anything to join Astra?",
+    a: "No. Joining Astra is free. We believe that financial circumstances should not be a barrier to becoming part of the network. Any costs associated with specific activities will be communicated separately in advance.",
   },
   {
-    q: "How do I bring Astra to my school?",
-    a: "Choose School Representative as your membership interest. Representation arrangements will be reviewed with the relevant students and school; applying does not automatically appoint you.",
+    q: "Can schools and organizations collaborate with Astra?",
+    a: "Yes. Astra welcomes collaboration with schools, universities, businesses and organizations that share our vision for youth innovation. Collaborations may include joint events, student initiatives, speaker sessions, exhibitions and other opportunities that benefit the wider student community.",
   },
 ] as const;
 
@@ -41,7 +40,7 @@ export function FAQ() {
           as="h2"
           id="faq-heading"
           className="display"
-          text="Questions, answered."
+          text="FAQs."
         />
         <div className="faq-list" data-reveal-group="">
           {questions.map((question, index) => (
@@ -73,17 +72,7 @@ export function FAQ() {
                 inert={active !== index}
               >
                 <div className="faq-answer-inner">
-                  <p className="body-copy">
-                    {question.a}
-                    {index === 4 ? (
-                      <>
-                        {" "}
-                        <Link href="/join" className="text-link">
-                          Explore the application.
-                        </Link>
-                      </>
-                    ) : null}
-                  </p>
+                  <p className="body-copy">{question.a}</p>
                 </div>
               </section>
             </div>

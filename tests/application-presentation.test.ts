@@ -7,8 +7,8 @@ import { ApplicationShell } from "@/components/application-presentation/applicat
 
 describe("application presentation components", () => {
   it.each([
-    ["core", "Your role in Astra"],
-    ["fellow", "Your project at Astra"],
+    ["core", "Be part of the team."],
+    ["fellow", "Your project at Astra."],
   ] as const)(
     "renders the %s introduction heading in SSR",
     (track, headline) => {

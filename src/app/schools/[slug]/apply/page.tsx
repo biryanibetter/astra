@@ -34,8 +34,9 @@ export default async function SchoolApply({
           : "Curiosity starts here."}
       </h1>
       <p className="schools-lede" data-reveal="fade">
-        For students aged 13–18. This is a private expression of interest, not
-        membership approval, school authorization, or permission to participate.
+        For students aged 13–18. This is a private expression of interest. It
+        does not confirm a chapter, grant school authorization, or give
+        permission to participate.
       </p>
       <SchoolApplication
         school={school}

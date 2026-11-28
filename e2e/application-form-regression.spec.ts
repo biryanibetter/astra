@@ -25,10 +25,10 @@ test("Core option cards support label, native pointer and keyboard input", async
   page,
 }) => {
   await profile(page);
-  const checkbox = page.getByLabel("Plan and coordinate tasks", {
+  const checkbox = page.getByLabel("Weekday afternoons", {
     exact: true,
   });
-  const label = page.locator('label[for="core-responsibilities-0"]');
+  const label = page.locator('label[for="core-availability-0"]');
   await label.click();
   await expect(checkbox).toBeChecked();
   await label.click();
@@ -40,7 +40,7 @@ test("Core option cards support label, native pointer and keyboard input", async
   await expect(checkbox).not.toBeChecked();
   await page.keyboard.press("Tab");
   await expect(
-    page.getByLabel("Create or improve digital tools", { exact: true }),
+    page.getByLabel("Weekday evenings", { exact: true }),
   ).toBeFocused();
   await checkbox.click();
   await expect(checkbox).toBeChecked();
@@ -56,7 +56,7 @@ test("Core option cards support touch without forced events", async ({
 }, testInfo) => {
   test.skip(!testInfo.project.use.hasTouch, "Touch-capable projects only.");
   await profile(page);
-  const checkbox = page.getByLabel("Plan and coordinate tasks", {
+  const checkbox = page.getByLabel("Weekday afternoons", {
     exact: true,
   });
   await checkbox.tap();

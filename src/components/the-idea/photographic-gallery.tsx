@@ -8,27 +8,28 @@ import styles from "./photographic-gallery.module.css";
 const phases = [
   {
     number: "01",
-    name: "Connect",
-    summary: "Meet curious people across schools and different disciplines.",
-    imagePath: "/images/program-stock/03-business-ideas.webp",
-    altText:
-      "A group of young adults discussing ideas around a table in a studio",
+    name: "Beyond school boundaries.",
+    summary:
+      "Students with shared ambitions often have limited opportunities to meet and collaborate beyond their own schools.",
+    imagePath: "/images/home-stock/faq-gathering.webp",
+    altText: "Three students talking and comparing notes outside",
   },
   {
     number: "02",
-    name: "Create",
-    summary: "Turn a question into an experiment, project or first prototype.",
+    name: "Beyond the curriculum.",
+    summary:
+      "Curiosity extends beyond academic requirements. Students deserve opportunities to pursue interests that traditional classroom learning may not accommodate.",
     imagePath: "/images/program-stock/02-build-create.webp",
     altText:
       "Two engineers working together on a prototype in a tool-lined workshop",
   },
   {
     number: "03",
-    name: "Share",
-    summary: "Put your work into the world and invite other ideas in.",
-    imagePath: "/images/program-stock/04-science-media-more.webp",
-    altText:
-      "Three university students conducting physics experiments in a laboratory",
+    name: "Beyond individual effort.",
+    summary:
+      "Promising ideas can benefit from collaboration, different perspectives and opportunities to reach a wider audience.",
+    imagePath: "/images/idea-stock/presentation.webp",
+    altText: "A student presenting to a group in a library",
   },
 ];
 
@@ -83,7 +84,7 @@ export default function PhotographicGallery() {
             as="h2"
             id="process-title"
             className="display"
-            text="From ideas to action."
+            text="Why Astra exists."
           />
         </header>
         {/* biome-ignore lint/a11y/useSemanticElements: Interactive card grouping uses no fieldset legend or form controls. */}
@@ -91,11 +92,11 @@ export default function PhotographicGallery() {
           className={styles.grid}
           data-reveal-group=""
           role="group"
-          aria-label="Explore the three stages of the ASTRA experience"
+          aria-label="Reasons Astra exists"
         >
           {phases.map((phase, index) => (
             <button
-              key={phase.name}
+              key={phase.number}
               type="button"
               className={styles.card}
               data-reveal="image"

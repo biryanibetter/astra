@@ -31,9 +31,10 @@ credentials, real application records or CVs.
 
 ## Current application status
 
-Core and Fellow retain their original five-step local forms, including validation,
-portfolio/CV controls and Review & Finish editing. Completion stays on the review
-step and does not send data, verify email or claim receipt. Prepared backend code
+Core has six application stages and requires a PDF CV and six membership
+acknowledgments. Fellow has five stages and an optional CV. Projects and links
+are optional on both. The local confirmation is labeled Development preview and
+does not send data, verify email or claim receipt. Prepared backend code
 includes verified-email duplicate checks, private PDF CV handling and
 an authorized review dashboard at `/admin`. Intake fails closed without complete
 configuration, an active round, and explicit CAPTCHA/privacy/intake approval.
@@ -51,6 +52,16 @@ Styled question cards keep their native keyboard controls and full-card
 pointer/touch target. OTP controls and configuration notices are not mounted in
 the local forms. Draft answers remain in page memory only. Connecting the prepared
 backend to the frontend requires a separate, approved Supabase integration.
+
+For the future intake integration: verify and normalize email addresses before
+server-side duplicate checks, and enforce one application per pathway and cycle.
+Disable Done Now while a submission is processing, make repeat clicks safe at
+the server, and apply rate limiting and anti-spam protection. A verified
+duplicate must create no new record and display: **Application already
+submitted.** We have already received an application for this membership pathway
+using your email address. Applying to both pathways in the same cycle remains
+an open policy decision. Show the receipt confirmation only after successful
+storage; on failure, retain the applicant’s answers and do not start the timer.
 
 A separate school-interest endpoint and its existing migration are retained.
 Its production host check remains Vercel-specific; do not enable that legacy

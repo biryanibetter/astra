@@ -1,6 +1,7 @@
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
+import { pathwayValidation } from "../src/components/pathway-validation";
 import { emptyPortfolioData } from "../src/components/portfolio-builder";
 import { ReviewStep } from "../src/components/review-step";
 
@@ -15,19 +16,19 @@ function renderReview(
     grade: "grade-9-year-10",
     questionResponses: {
       "core-areas": ["Technology & AI", "Projects & programs"],
-      "core-idea": "First project: a school workshop.",
-      "core-experience": "Second project: a student resource site.",
-      "core-responsibilities": ["Plan and coordinate tasks"],
+      "core-motivation": "I can help organize school workshops.",
+      "core-availability": ["Friday", "Saturday"],
       "core-time": "3–4 hours",
-      "core-skills": "Build facilitation skills.",
+      "core-in-person": "Yes",
       "fellow-field": "Research & academia",
-      "fellow-project": "First project: a school workshop.",
-      "fellow-contribution": "Second project: a student resource site.",
-      "fellow-evidence": "A tested prototype.",
-      "fellow-next-year": "Expand the study.",
-      "fellow-contribution-to-astra": "Share findings with peers.",
+      "fellow-motivation": "Explore clean energy.",
+      "fellow-ambitions": "Learn how to design a study.",
+      "fellow-activities": ["Research & innovation exhibitions"],
+      "fellow-collaboration": "Depending on the project or opportunity.",
+      "fellow-opportunities": ["Finding collaborators"],
     },
     ageEligible: true,
+    commitments: {},
     ...overrides,
   };
   return renderToStaticMarkup(
@@ -35,6 +36,10 @@ function renderReview(
       track,
       answers,
       portfolio: emptyPortfolioData,
+      completion: pathwayValidation(track, {
+        ...answers,
+        portfolio: emptyPortfolioData,
+      }),
       onEdit: vi.fn(),
     }),
   );
@@ -66,15 +71,13 @@ describe("ReviewStep", () => {
     },
   );
 
-  it("formats grade values and keeps project responses distinct", () => {
+  it("formats grades, shows pathway responses and omits unanswered optional text", () => {
     const markup = renderReview("core");
     expect(markup).toContain("Grade 9 / Year 10");
     expect(markup).not.toContain("grade-9-year-10");
-    expect(markup).toContain("First project: a school workshop.");
-    expect(markup).toContain("Second project: a student resource site.");
-    expect(markup.split("First project: a school workshop.")).toHaveLength(2);
-    expect(
-      markup.split("Second project: a student resource site."),
-    ).toHaveLength(2);
+    expect(markup).toContain("I can help organize school workshops.");
+    expect(markup).toContain("Membership Commitments");
+    expect(markup).not.toContain("Do you have any existing commitments");
+    expect(renderReview("fellow")).not.toContain("Membership Commitments");
   });
 });

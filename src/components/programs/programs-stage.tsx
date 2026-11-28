@@ -25,6 +25,9 @@ export type ProgramsStageItem = {
 
 type ProgramsStageProps = {
   programs: readonly ProgramsStageItem[];
+  heading: string;
+  intro?: ReactNode;
+  children?: ReactNode;
   showSpotlightCard?: boolean;
 };
 
@@ -36,6 +39,9 @@ const imageAlt = (image: ProgramsStageItem["image"], title: string) =>
 
 export default function ProgramsStage({
   programs,
+  heading,
+  intro,
+  children,
   showSpotlightCard = true,
 }: ProgramsStageProps) {
   const [readySources, setReadySources] = useState<ReadonlySet<string>>(
@@ -148,8 +154,10 @@ export default function ProgramsStage({
   return (
     <div className={styles.page}>
       <main id="main" className={styles.main}>
+        {intro}
         <ProgramsExperienceSection
           programs={programs}
+          heading={heading}
           stageRef={controller.stageRef}
           activeIndex={displayedIndex}
           stageState={controller.state}
@@ -159,6 +167,7 @@ export default function ProgramsStage({
           isTransitioning={isTransitioning}
         />
         {showSpotlightCard !== false && <SpotlightCard />}
+        {children}
       </main>
     </div>
   );
@@ -166,6 +175,7 @@ export default function ProgramsStage({
 
 function ProgramsExperienceSection({
   programs,
+  heading,
   stageRef,
   activeIndex,
   stageState,
@@ -175,6 +185,7 @@ function ProgramsExperienceSection({
   isTransitioning,
 }: {
   programs: readonly ProgramsStageItem[];
+  heading: string;
   stageRef: RefObject<HTMLElement | null>;
   activeIndex: number;
   stageState: ProgramsStageState;
@@ -198,7 +209,7 @@ function ProgramsExperienceSection({
       data-lenis-prevent={stageState === "LOCKED" || undefined}
     >
       <ProgramsStageViewport>
-        <ProgramsHeading />
+        <ProgramsHeading heading={heading} />
         <div
           className={styles.content}
           style={{
@@ -241,15 +252,15 @@ function ProgramsStageViewport({ children }: { children: ReactNode }) {
   );
 }
 
-function ProgramsHeading() {
+function ProgramsHeading({ heading }: { heading: string }) {
   return (
-    <header className={styles.heading} data-testid="programs-heading">
+    <header
+      className={styles.heading}
+      data-programs-heading
+      data-testid="programs-heading"
+    >
       <div className={styles.headingMain}>
-        <WordRevealHeading
-          shimmer
-          as="h1"
-          text="Explore what you could build."
-        />
+        <WordRevealHeading shimmer as="h2" text={heading} />
       </div>
     </header>
   );

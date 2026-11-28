@@ -26,10 +26,10 @@ export default function About() {
       </p>
       <h2 data-reveal="fade-up">Safeguarding comes first.</h2>
       <p data-reveal="section">
-        ASTRA serves students aged 13–18. Adult oversight, participation
-        procedures and guardian authorization requirements must be reviewed and
-        confirmed before participation begins. Applicant information and
-        photographs are never published by this website.
+        Astra Core and Fellow are open to students aged 14–18. Adult oversight,
+        participation procedures and guardian authorization requirements must be
+        reviewed and confirmed before participation begins. Applicant
+        information and photographs are never published by this website.
       </p>
       <JoinLink reveal />
     </main>

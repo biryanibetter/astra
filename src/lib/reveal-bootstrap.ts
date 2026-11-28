@@ -86,6 +86,10 @@ export function bootstrapScrollReveals() {
       (element) =>
         !seen.has(element) &&
         !element.parentElement?.closest("[data-reveal]") &&
+        !(
+          element.hasAttribute("data-reveal-respect-motion") &&
+          window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ) &&
         !element.closest("form, [contenteditable='true']") &&
         !element.querySelector(
           "input, textarea, select, [contenteditable='true']",
@@ -96,13 +100,23 @@ export function bootstrapScrollReveals() {
     targets.forEach((element, index) => {
       const box = boxes[index];
       if (!box || box.height === 0) return;
+      const visible = box.top < innerHeight;
+      const initialWords =
+        element.dataset.reveal === "words" && scrollY === 0 && box.top >= 0;
+      // An initial word entrance can enter the observer's approach margin
+      // before hydration. Wait for its player instead of consuming the reveal.
+      if (initialWords && !runtime.play) return;
       seen.add(element);
       // Initial viewport / restored scroll position is already readable.
-      if (box.top < innerHeight || element.contains(document.activeElement))
+      if (
+        (visible && !initialWords) ||
+        element.contains(document.activeElement)
+      )
         return;
       try {
+        const opacity = visible ? 1 : 0;
         const hold = element.animate(
-          { opacity: [0, 0] },
+          { opacity: [opacity, opacity] },
           { duration: 1, fill: "both" },
         );
         pending.set(element, hold);

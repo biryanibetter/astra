@@ -75,7 +75,7 @@ export default async function SchoolProfile({
           </p>
           <p>
             Students can explore the network&apos;s{" "}
-            <Link className="school-profile-back" href="/programs">
+            <Link className="school-profile-back" href="/the-idea">
               programs and opportunities
             </Link>{" "}
             while deciding what they might like to contribute.

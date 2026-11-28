@@ -291,9 +291,6 @@ h3 {
 .skip-link:focus {
   top: 10px;
 }
-.events-experiences {
-  padding-top: 80px;
-}
 .content-page {
   padding-top: 180px;
   padding-bottom: 110px;
@@ -355,10 +352,5 @@ h3 {
   }
   .content-page {
     padding-top: 145px;
-  }
-}
-@media (max-width: 700px) {
-  .events-experiences {
-    padding-top: 60px;
   }
 }

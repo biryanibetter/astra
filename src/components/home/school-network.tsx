@@ -4,6 +4,7 @@ import { Pencil } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { MembershipPathwayIcon } from "@/components/ui/membership-pathway-icon";
 import { ShinyButton } from "@/components/ui/shiny-button";
 import { WordRevealHeading } from "@/components/ui/word-reveal-heading";
 import {
@@ -85,8 +86,8 @@ export function SchoolNetwork() {
             text="Put your school on the map."
           />
           <p className="network-description" data-reveal="fade-up">
-            Astra connects ambitious students across Qatar. Find your school and
-            discover how you can be part of what&apos;s next.
+            Select your school and discover which Astra pathway best aligns with
+            your interests, goals and ambitions.
           </p>
         </div>
         <div className="network-search-area">
@@ -321,23 +322,15 @@ export function SchoolNetwork() {
         <ShinyButton
           className="network-pathway astra-card-glass"
           data-reveal="cta"
-          href={`/apply/core${context}`}
+          href={`/apply/core${context}#main`}
           scroll={true}
         >
-          <svg
-            className="pathway-icon"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.2"
-            aria-hidden="true"
-          >
-            <path d="m12 2 2.8 7.2L22 12l-7.2 2.8L12 22l-2.8-7.2L2 12l7.2-2.8Z" />
-            <circle cx="12" cy="12" r="2" />
-          </svg>
+          <MembershipPathwayIcon pathway="core" className="pathway-icon" />
           <span>
             <strong>Astra Core</strong>
-            <small>Contribute to student-led projects.</small>
+            <small>
+              Help shape Astra through its operations, events and initiatives.
+            </small>
           </span>
           <span className="pathway-arrow" aria-hidden="true">
             ↗
@@ -346,30 +339,15 @@ export function SchoolNetwork() {
         <ShinyButton
           className="network-pathway astra-card-glass"
           data-reveal="cta"
-          href={`/apply/fellow${context}`}
+          href={`/apply/fellow${context}#main`}
           scroll={true}
         >
-          <svg
-            className="pathway-icon"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.2"
-            aria-hidden="true"
-          >
-            <circle cx="12" cy="12" r="7.5" />
-            <ellipse
-              cx="12"
-              cy="12"
-              rx="11"
-              ry="4"
-              transform="rotate(-35 12 12)"
-            />
-            <circle cx="19" cy="6" r="1.5" fill="currentColor" stroke="none" />
-          </svg>
+          <MembershipPathwayIcon pathway="fellow" className="pathway-icon" />
           <span>
             <strong>Astra Fellow</strong>
-            <small>Build independent work with a wider network.</small>
+            <small>
+              Pursue your own projects, research and independent initiatives.
+            </small>
           </span>
           <span className="pathway-arrow" aria-hidden="true">
             ↗

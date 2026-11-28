@@ -114,11 +114,25 @@ export function ShinyMaterial({ children }: { children: ReactNode }) {
     <>
       <span className="shiny-button-content">{children}</span>
       <span ref={surface} className="shiny-button-surface" aria-hidden="true">
-        <span className="shiny-button-border" />
+        <ShinyPerimeter />
         <span className="shiny-button-glimmer" />
         <span className="shiny-button-ripple" />
       </span>
     </>
+  );
+}
+
+export function ShinyPerimeter({
+  respectReducedMotion = false,
+}: {
+  respectReducedMotion?: boolean;
+} = {}) {
+  return (
+    <span
+      className="shiny-button-border"
+      data-shiny-respect-motion={respectReducedMotion || undefined}
+      aria-hidden="true"
+    />
   );
 }
 

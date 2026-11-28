@@ -18,13 +18,13 @@ describe("framed reel", () => {
     expect(html).not.toContain("Reel to come");
   });
 
-  it("preserves the silver frame and existing copy", () => {
+  it("preserves the silver frame and shows the approved supporting copy", () => {
     const html = renderToStaticMarkup(createElement(FramedReel));
     expect(html).toContain('class="reel-frame"');
     expect(html).toContain('class="reel-frame-inner"');
     expect(html).toContain("Ideas are better in motion.");
     expect(html).toContain(
-      "This reel is a first glimpse of the energy, ambition and creativity behind the network.",
+      "Through student-led initiatives, collaborative projects and shared experiences, Astra aims to build a community where ideas are discussed, developed and put into practice.",
     );
   });
 

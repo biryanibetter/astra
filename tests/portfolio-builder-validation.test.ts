@@ -41,8 +41,8 @@ describe("isPortfolioValid", () => {
     ).toBe(true);
   });
 
-  it("rejects an empty portfolio", () => {
-    expect(isPortfolioValid(data())).toBe(false);
+  it("accepts an empty portfolio or a valid link alone", () => {
+    expect(isPortfolioValid(data())).toBe(true);
     expect(
       isPortfolioValid(
         data({
@@ -56,27 +56,27 @@ describe("isPortfolioValid", () => {
           ],
         }),
       ),
-    ).toBe(false);
+    ).toBe(true);
   });
 
-  it("rejects a portfolio with only a CV but no project", () => {
+  it("accepts a portfolio with only a CV", () => {
     expect(
       isPortfolioValid(
         data({
           cv: [{ id: "cv", file: acceptedFile, error: undefined }],
         }),
       ),
-    ).toBe(false);
+    ).toBe(true);
   });
 
-  it("rejects a portfolio with only a project but no CV", () => {
+  it("accepts a portfolio with only a project", () => {
     expect(
       isPortfolioValid(
         data({
           projects: [minimalProject],
         }),
       ),
-    ).toBe(false);
+    ).toBe(true);
   });
 
   it.each(["javascript:alert(1)", "not a URL", "ftp://example.org"])(

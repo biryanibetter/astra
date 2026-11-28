@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, type Page, test } from "@playwright/test";
 import type Lenis from "lenis";
 
 type ScrollTestWindow = Window & {
@@ -8,6 +8,23 @@ type ScrollTestWindow = Window & {
 };
 
 test.describe.configure({ timeout: 180000 });
+
+async function expectExperiencesBelowHeader(page: Page) {
+  await expect
+    .poll(() =>
+      page.evaluate(() => {
+        const heading = document.getElementById("events-heading");
+        const header = document.querySelector(".site-header");
+        if (!heading || !header) return false;
+        const bounds = heading.getBoundingClientRect();
+        return (
+          bounds.top >= header.getBoundingClientRect().bottom &&
+          bounds.bottom <= innerHeight
+        );
+      }),
+    )
+    .toBe(true);
+}
 
 test("all retained public and application routes resolve", async ({
   request,
@@ -19,10 +36,8 @@ test("all retained public and application routes resolve", async ({
     "/privacy",
     "/network",
     "/join",
-    "/events",
     "/programs",
     "/the-idea",
-    "/whats-next",
     "/schools",
     "/schools/birla-public-school",
     "/schools/birla-public-school/apply",
@@ -42,6 +57,86 @@ test("all retained public and application routes resolve", async ({
   }
   const admin = await request.get("/admin");
   expect(admin.url()).toContain("/admin/login");
+});
+
+test("legacy event URLs redirect directly to Experiences", async ({
+  request,
+}) => {
+  for (const path of ["/events", "/whats-next"]) {
+    const response = await request.get(path, { maxRedirects: 0 });
+    expect(response.status(), path).toBe(308);
+    expect(response.headers().location, path).toBe("/#events");
+  }
+});
+
+for (const path of ["/", "/the-idea", "/apply/core", "/apply/fellow"]) {
+  test(`What's Next menu opens Experiences from ${path}`, async ({ page }) => {
+    await page.goto(path);
+    await page.getByRole("button", { name: "Menu", exact: true }).click();
+    await page
+      .getByRole("navigation", { name: "Expanded main navigation" })
+      .getByRole("link", { name: "What's Next" })
+      .click();
+    // The dev server may compile the destination's RSC response on demand.
+    await expect(page).toHaveURL(/\/#events$/, { timeout: 15000 });
+    await expect(
+      page.getByRole("dialog", { name: "Main navigation" }),
+    ).toHaveCount(0);
+    if (path === "/") await expect(page.locator("#events")).toBeFocused();
+    await expectExperiencesBelowHeader(page);
+  });
+}
+
+test("What's Next uses the homepage scroll lifecycle with a query string", async ({
+  page,
+}) => {
+  await page.goto("/?ref=bookmark");
+  await page.getByRole("button", { name: "Menu", exact: true }).click();
+  await page
+    .getByRole("navigation", { name: "Expanded main navigation" })
+    .getByRole("link", { name: "What's Next" })
+    .click();
+  await expect(page).toHaveURL(/\/\?ref=bookmark#events$/);
+  await expect(page.locator("#events")).toBeFocused();
+  await expectExperiencesBelowHeader(page);
+});
+
+test("legacy bookmarks position the Experiences heading below the header", async ({
+  page,
+}) => {
+  for (const path of ["/whats-next", "/events"]) {
+    await page.goto(path);
+    await expect(page).toHaveURL(/\/#events$/);
+    await expectExperiencesBelowHeader(page);
+  }
+});
+
+test("What's Next from the footer lands at Experiences without showing the homepage footer", async ({
+  page,
+}) => {
+  await page.goto("/the-idea");
+  await page.evaluate(() => {
+    const sample = () => {
+      const footer = document.querySelector("body > footer");
+      if (document.getElementById("events") && footer) {
+        const bounds = footer.getBoundingClientRect();
+        if (bounds.top < innerHeight && bounds.bottom > 0)
+          document.body.dataset.homeFooterFlashed = "true";
+      }
+      requestAnimationFrame(sample);
+    };
+    requestAnimationFrame(sample);
+  });
+  await page
+    .getByRole("contentinfo")
+    .getByRole("link", { name: "What's Next" })
+    .click();
+  await expect(page).toHaveURL(/\/#events$/);
+  await expectExperiencesBelowHeader(page);
+  await expect(page.locator("body")).not.toHaveAttribute(
+    "data-home-footer-flashed",
+    "true",
+  );
 });
 
 test("approved branding, fixed header, sky and scroll lifecycle survive navigation", async ({
@@ -80,12 +175,7 @@ test("approved branding, fixed header, sky and scroll lifecycle survive navigati
   await expect(header).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath("reconciled-home.png") });
   await header.getByRole("link", { name: "Astra home", exact: true }).click();
-  for (const path of [
-    "/the-idea",
-    "/whats-next",
-    "/apply/core",
-    "/apply/fellow",
-  ]) {
+  for (const path of ["/the-idea", "/apply/core", "/apply/fellow"]) {
     await page.goto(path);
     await expect(header).toHaveCSS("position", "fixed");
     await expect(page.locator(".global-starfield canvas")).toHaveCount(1);

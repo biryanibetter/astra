@@ -168,7 +168,7 @@
 .eligibilityGroup {
   display: grid;
   gap: 0;
-  margin: 16px 0 84px;
+  margin: 16px 0 14px;
 }
 
 .eligibility {

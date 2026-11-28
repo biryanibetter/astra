@@ -32,6 +32,16 @@ function cancelInertia(lenis: Lenis) {
   lenis.start();
 }
 
+function resetScrollToTop(lenis: Lenis) {
+  // Immediately reset both the animated scroll position and the browser scroll position
+  // to the top. This prevents the footer from flashing on route transitions.
+  lenis.scrollTo(0, { immediate: true, force: true });
+  // Also synchronize the browser's native scroll position
+  if (typeof window !== "undefined") {
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+  }
+}
+
 function ScrollLifecycle() {
   const lenis = useLenis();
   const pathname = usePathname();
@@ -57,6 +67,12 @@ function ScrollLifecycle() {
     pendingAnchor.current = null;
     lenis.resize();
     cancelInertia(lenis);
+    // Reset scroll position to top on route change before destination content renders.
+    // Preserve legitimate anchor navigation: if the URL has a hash, let the browser
+    // handle it (or the anchor handler below) instead of forcing scroll to top.
+    if (typeof window !== "undefined" && !window.location.hash) {
+      resetScrollToTop(lenis);
+    }
   }, [lenis, pathname, searchParams]);
 
   useEffect(() => {
@@ -122,10 +138,14 @@ function ScrollLifecycle() {
       if (
         url.origin !== location.origin ||
         url.pathname !== location.pathname ||
-        url.search !== location.search ||
         !url.hash
       )
         return;
+      // Experiences is a section of the current homepage. Keep its query
+      // string so a tagged homepage visit doesn't trigger route navigation.
+      if (url.pathname === "/" && url.hash === "#events" && !url.search)
+        url.search = location.search;
+      if (url.search !== location.search) return;
       let target: HTMLElement | null;
       try {
         target = document.getElementById(decodeURIComponent(url.hash.slice(1)));

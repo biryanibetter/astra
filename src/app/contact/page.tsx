@@ -38,7 +38,7 @@ export default function Contact() {
       )}
       <p style={{ marginTop: 32 }} data-reveal="cta">
         Interested in the network?{" "}
-        <Link className="text-link" href="/join">
+        <Link className="text-link" href="/#schools-heading">
           Explore the application
         </Link>
         .

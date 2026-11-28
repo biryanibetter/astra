@@ -11,6 +11,7 @@ export default defineConfig({
   testIgnore: [],
   testMatch: [
     "restored-local-form.spec.ts",
+    "application-school-handoff.spec.ts",
     "reconciled-frontend.spec.ts",
     "cloudflare-runtime.spec.ts",
     "home-map-preparation.spec.ts",

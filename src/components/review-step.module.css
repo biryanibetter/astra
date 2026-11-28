@@ -8,6 +8,8 @@
 }
 
 .overview {
+  position: relative;
+  isolation: isolate;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(200px, 240px);
   align-items: center;
@@ -21,6 +23,29 @@
   box-shadow:
     inset 0 1px rgba(255, 255, 255, 0.08),
     0 24px 72px rgba(0, 0, 0, 0.38);
+}
+
+/* Complete state: animated glass border from ShinyPerimeter */
+.overviewComplete {
+  border-color: transparent;
+  background:
+    radial-gradient(ellipse at 4% 0%, rgba(220, 226, 234, 0.1), transparent 46%),
+    linear-gradient(120deg, rgba(255, 255, 255, 0.035), rgba(0, 0, 0, 0.94) 72%);
+}
+
+/* Ensure ShinyPerimeter border radius matches overview's 16px */
+.overviewComplete .shiny-button-border {
+  border-radius: 16px;
+}
+.overviewComplete .shiny-button-border::before {
+  border-radius: 16px;
+}
+
+/* Keep interior dark and understated when complete */
+.overviewComplete .overviewIdentity,
+.overviewComplete .completeness {
+  position: relative;
+  z-index: 2;
 }
 
 .overviewIdentity {
@@ -43,10 +68,13 @@
   letter-spacing: -0.04em;
 }
 .overviewCopy {
+  display: grid;
+  gap: 8px;
   min-width: 0;
+  text-align: left;
 }
 .overviewEyebrow {
-  margin: 0 0 10px;
+  margin: 0;
   color: #c6ccd5;
   font: 600 11px / 1.4 var(--font-mono, monospace);
   letter-spacing: 0.14em;
@@ -63,7 +91,7 @@
   text-wrap: balance;
 }
 .trackName {
-  margin: 11px 0 0;
+  margin: 0;
   color: var(--review-muted);
   font-size: 16px;
   line-height: 1.5;
@@ -101,10 +129,31 @@
   background: rgba(220, 226, 234, 0.2);
 }
 .progressTrack span {
+  position: relative;
   display: block;
   height: 100%;
   background: linear-gradient(90deg, #aeb7c3, #f4f6f8);
   transition: width 240ms ease-out;
+}
+.progressTrack span::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background: #4acb7d;
+  opacity: 0;
+  transition: opacity 240ms ease-out;
+}
+.completeness[data-complete="true"] .progressTrack span::after {
+  opacity: 1;
+}
+.completeness[data-complete="true"] .completenessValue {
+  color: #4acb7d;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progressTrack span::after {
+    transition: none;
+  }
 }
 
 /* Rounded section containers replace the previous straight divider list so
@@ -548,5 +597,199 @@
   }
   .sectionHeader {
     align-items: flex-start;
+  }
+}
+
+/* Membership Commitments Review Styles */
+.commitmentsReview {
+  min-width: 0;
+}
+
+.commitmentsSummary {
+  margin-bottom: 16px;
+  color: var(--review-muted);
+  font: 500 13px / 1.4 var(--font-mono, monospace);
+  letter-spacing: 0.02em;
+}
+
+.commitmentsList {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.commitmentRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+}
+
+.commitmentIcon {
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  margin-top: 2px;
+  color: #c6ccd5;
+}
+
+.commitmentCheck {
+  width: 16px;
+  height: 16px;
+  color: #4acb7d;
+}
+
+.commitmentDash {
+  width: 16px;
+  height: 2px;
+  background: var(--review-line);
+  border-radius: 1px;
+}
+
+.commitmentLabel {
+  flex: 1;
+  min-width: 0;
+  color: #eef1f5;
+  font-size: 15px;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+/* Edit step commitments (not review) */
+.commitmentsFieldset {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.commitmentsFieldsetHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 4px;
+}
+
+/* Select All / Deselect All button - Astra secondary action button style */
+.commitmentsSelectAll {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  min-height: 44px;
+  padding: 0 20px;
+  border: 1px solid rgba(220, 226, 234, 0.34);
+  border-radius: 8px;
+  background: #08090b;
+  color: #f7f9fc;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
+  cursor: pointer;
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    color 180ms ease;
+}
+
+.commitmentsSelectAll:hover,
+.commitmentsSelectAll:focus-visible {
+  border-color: rgba(198, 204, 213, 0.65);
+  background: rgba(198, 204, 213, 0.12);
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.12),
+    0 0 8px rgba(206, 214, 224, 0.12);
+  color: #fff;
+}
+
+.commitmentsSelectAll:focus-visible {
+  outline: 2px solid #f5f6f8;
+  outline-offset: 3px;
+}
+
+.commitmentsSelectAll svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+/* Position the select all button at bottom right of commitments section */
+.commitmentsFieldsetHeader {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 24px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(220, 226, 234, 0.12);
+}
+
+.commitmentsRows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.commitmentRowInput {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid rgba(220, 226, 234, 0.16);
+  border-radius: 8px;
+  background: rgba(5, 6, 7, 0.6);
+  backdrop-filter: blur(12px);
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease;
+}
+
+.commitmentRowInput:hover {
+  border-color: rgba(220, 226, 234, 0.35);
+  background: rgba(198, 204, 213, 0.05);
+}
+
+.commitmentRowInput:focus-within {
+  outline: 2px solid #c6ccd5;
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+.commitmentRowInput input[type="checkbox"] {
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  accent-color: #c6ccd5;
+  cursor: pointer;
+}
+
+.commitmentRowInput label {
+  flex: 1;
+  min-width: 0;
+  color: #eef1f5;
+  font-size: 15px;
+  line-height: 1.55;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 640px) {
+  .commitmentsHeaderRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .commitmentsSummary {
+    align-self: flex-start;
+  }
+  .commitmentRowInput {
+    padding: 10px 12px;
   }
 }

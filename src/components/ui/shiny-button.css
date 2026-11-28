@@ -198,6 +198,12 @@
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .shiny-button-border[data-shiny-respect-motion]::before {
+    animation: none;
+  }
+}
+
 @keyframes shiny-sweep {
   0%,
   18% {

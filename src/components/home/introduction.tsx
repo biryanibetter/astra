@@ -1,58 +1,63 @@
 "use client";
 
+import editorial from "@/components/ui/editorial-copy.module.css";
 import {
   type DisciplinePreview,
   HoverPreview,
 } from "@/components/ui/hover-preview";
+import { ShimmerText } from "@/components/ui/shimmer-text";
 
 const disciplines: readonly DisciplinePreview[] = [
   {
     id: "technology",
     name: "technology",
-    copy: "Builders, coders, robotics.",
+    copy: "Build projects, experiment with new technologies and exchange technical knowledge.",
     color: "#C6CCD5",
-    image: "/images/technology-preview.svg",
+    image: "/images/home-stock/technology.webp",
   },
   {
     id: "business",
     name: "business",
-    copy: "Founders, pitches, real ventures.",
+    copy: "Discuss business ideas, develop entrepreneurial projects and explore new opportunities.",
     color: "#8E9BAE",
-    image: "/images/business-preview.svg",
+    image: "/images/home-stock/business.webp",
   },
   {
     id: "science",
     name: "science",
-    copy: "Labs, research, curiosity.",
+    copy: "Explore research ideas, exchange scientific knowledge and collaborate on investigations.",
     color: "#A3A9B4",
-    image: "/images/science-preview.svg",
+    image: "/images/home-stock/science.webp",
   },
   {
     id: "design",
     name: "design",
-    copy: "Brands, products, visual craft.",
+    copy: "Exchange creative ideas, develop concepts and collaborate on design projects.",
     color: "#C6CCD5",
-    image: "/images/design-preview.svg",
+    image: "/images/home-stock/design.webp",
   },
   {
     id: "media",
     name: "media",
-    copy: "Film, content, storytelling.",
+    copy: "Create content, tell stories and bring student initiatives to a wider audience.",
     color: "#8E9BAE",
-    image: "/images/media-preview.svg",
+    image: "/images/home-stock/media.webp",
   },
 ] as const;
 
 export function Introduction() {
   return (
     <section
-      className="wrap introduction home-section"
+      className={`wrap introduction ${editorial.section}`}
       aria-labelledby="intro-heading"
       data-reveal="section"
     >
-      <p className="eyebrow">INTRODUCING ASTRA</p>
-      <h2 id="intro-heading" className="display">
-        A cross-school network for people who want to do things, in{" "}
+      <h2 id="intro-heading" className={`display ${editorial.text}`}>
+        <ShimmerText homepage restrained>
+          <span data-shimmer-text="">
+            A cross-school network bringing together young innovators across
+          </span>
+        </ShimmerText>{" "}
         <HoverPreview disciplines={disciplines} />
       </h2>
     </section>

@@ -57,8 +57,8 @@ import { ApplicationIntroduction } from "@/components/application-presentation/a
 
 describe("application introduction carousel controls", () => {
   it.each([
-    ["core", "Your role in Astra"],
-    ["fellow", "Your project at Astra"],
+    ["core", "Be part of the team."],
+    ["fellow", "Your project at Astra."],
   ] as const)("renders the %s introduction heading in SSR", (track, title) => {
     const html = renderToStaticMarkup(ce(ApplicationIntroduction, { track }));
 
@@ -72,9 +72,9 @@ describe("application introduction carousel controls", () => {
       ce(ApplicationIntroduction, { track: "core" }),
     );
 
-    expect(html).toContain("Events that bring people together");
+    expect(html).toContain("Behind the scenes.");
     expect(html).toContain(
-      "Create the moments where new connections and ideas begin.",
+      "Help plan, coordinate and deliver the initiatives that bring Astra to life.",
     );
     expect(html.match(/aria-label="(?:Previous|Next) slide"/g)).toHaveLength(2);
     expect(html).not.toContain("Show slide");

@@ -78,8 +78,8 @@ export function Hero() {
           </ShimmerText>
         </h1>
         <p className="body-copy">
-          Astra is where ambitious young people in Qatar find each other and
-          actually do things.
+          Connecting Qatar&apos;s next generation of thinkers, creators and
+          innovators through a network that goes beyond school boundaries.
         </p>
         <div className="hero-arrival">
           <JoinLink />
@@ -91,8 +91,8 @@ export function Hero() {
 
 const HERO_SUFFIXES = [
   "what's next.",
-  "something more.",
   "bold ideas.",
+  "curious minds.",
   "the future.",
   "real impact.",
 ] as const;

@@ -36,6 +36,7 @@ interface ShimmerTextProps {
   repeatDelay?: number;
   restrained?: boolean;
   homepage?: boolean;
+  disabled?: boolean;
 }
 
 const variantMap: Record<Variant, string> = {
@@ -74,6 +75,7 @@ export function ShimmerText({
   repeatDelay = 0.8,
   restrained = false,
   homepage = false,
+  disabled = false,
 }: ShimmerTextProps) {
   const root = useRef<HTMLSpanElement>(null);
   const [ready, setReady] = useState(false);
@@ -83,7 +85,7 @@ export function ShimmerText({
     const element = root.current;
     // display:contents adds no line box, clipping boundary, or layout wrapper.
     const heading = element?.parentElement;
-    if (!element || !heading) return;
+    if (disabled || !element || !heading) return;
     let disposed = false;
     const measure = () => {
       if (disposed) return;
@@ -116,14 +118,14 @@ export function ShimmerText({
       disposed = true;
       resize.disconnect();
     };
-  }, []);
+  }, [disabled]);
 
   const start = homepage ? 0 : -1;
   const end = homepage ? 1 : 2;
   useEffect(() => {
     const element = root.current;
     const heading = element?.parentElement;
-    if (!ready || !element || !heading) return;
+    if (disabled || !ready || !element || !heading) return;
     // Keep one playback clock. Offscreen custom-property writes still invalidate
     // inherited word styles/layout in GX, even though no text is visible.
     // Pause/play preserves the sweep phase and never remounts the typewriter.
@@ -168,15 +170,15 @@ export function ShimmerText({
       document.removeEventListener("visibilitychange", sync);
       controls.cancel();
     };
-  }, [ready, start, end, duration, homepage, delay, repeatDelay]);
+  }, [disabled, ready, start, end, duration, homepage, delay, repeatDelay]);
 
   return (
     <span
       ref={root}
       className={cn(styles.root, variantMap[variant], className)}
       data-shimmer=""
-      data-shimmer-ready={ready}
-      data-shimmer-active={active}
+      data-shimmer-ready={!disabled && ready}
+      data-shimmer-active={!disabled && active}
       data-shimmer-restrained={restrained}
       data-shimmer-home={homepage}
       style={

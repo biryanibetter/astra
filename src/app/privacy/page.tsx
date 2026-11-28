@@ -23,12 +23,14 @@ export default function Privacy() {
           notice. Do not enable submissions based on this draft alone.
         </p>
       </div>
-      <h2 data-reveal="fade-up">What the application asks for</h2>
+      <h2 data-reveal="fade-up">
+        What the school-interest application asks for
+      </h2>
       <p data-reveal="section">
         Your name, email, school, grade or academic year, confirmation that you
-        are aged 13–18, areas of interest, membership interest, an optional
-        introduction and your acknowledgement of this notice. Do not include
-        sensitive information in your introduction. School founding-team
+        are aged 13–18, areas of interest, how you want to get involved, an
+        optional introduction and your acknowledgement of this notice. Do not
+        include sensitive information in your introduction. School founding-team
         applications also ask about an initiative or experience and why you want
         to contribute; these answers are stored privately with your application,
         not in the public school directory. We do not request your date of
@@ -36,11 +38,11 @@ export default function Privacy() {
       </p>
       <h2 data-reveal="fade-up">Why and who can access it</h2>
       <p data-reveal="section">
-        The information is used to review and respond to membership
+        The information is used to review and respond to school-interest
         applications. Access is restricted to authorized application reviewers.
-        An application does not guarantee membership. The database is hosted by
-        Supabase; Cloudflare Turnstile helps protect the form against automated
-        abuse. No applicant details are displayed publicly.
+        An application does not guarantee participation. The database is hosted
+        by Supabase; Cloudflare Turnstile helps protect the form against
+        automated abuse. No applicant details are displayed publicly.
       </p>
       <p data-reveal="section">
         The school map loads geography from OpenFreeMap. Loading the map sends
@@ -72,11 +74,11 @@ export default function Privacy() {
       </p>
       <h2 data-reveal="fade-up">Students and guardian permission</h2>
       <p data-reveal="section">
-        The network serves students aged 13–18. Applying is not permission to
-        participate in activities. Appropriate guardian authorization and
-        safeguarding review must happen separately before participation where
-        required. This form does not request guardian contact details or grant
-        photo-publication permission.
+        The school-interest form is for students aged 13–18. Applying is not
+        permission to participate in activities. Appropriate guardian
+        authorization and safeguarding review must happen separately before
+        participation where required. This form does not request guardian
+        contact details or grant photo-publication permission.
       </p>
       <h2 data-reveal="fade-up">Required before launch</h2>
       <p data-reveal="section">

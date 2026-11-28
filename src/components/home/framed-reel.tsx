@@ -19,15 +19,16 @@ export function FramedReel() {
       </div>
       <div className="reel-copy">
         <WordRevealHeading
+          shimmer="home"
           as="h2"
           id="reel-heading"
           className="display"
           text="Ideas are better in motion."
         />
         <p className="body-copy" data-reveal="fade-up">
-          Astra is built for students who want to make, test, present and build
-          together. This reel is a first glimpse of the energy, ambition and
-          creativity behind the network.
+          Through student-led initiatives, collaborative projects and shared
+          experiences, Astra aims to build a community where ideas are
+          discussed, developed and put into practice.
         </p>
       </div>
     </section>

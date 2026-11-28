@@ -15,6 +15,8 @@ import {
 import { motion } from "motion/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+
+const EMPTY_ARRAY: string[] = [];
 import {
   AnimatedLabelInput,
   AnimatedLabelLetters,
@@ -29,18 +31,12 @@ import {
 } from "@/components/ui/select";
 import { searchSchoolLocations } from "@/lib/school-locations";
 import styles from "./applicant-profile-step.module.css";
-import type { PathwayQuestion } from "./pathway-questions";
-import { getGradeLabel } from "./pathway-questions";
-
-const gradeOptions = [
-  ["grade-6-year-7", "Grade 6 / Year 7"],
-  ["grade-7-year-8", "Grade 7 / Year 8"],
-  ["grade-8-year-9", "Grade 8 / Year 9"],
-  ["grade-9-year-10", "Grade 9 / Year 10"],
-  ["grade-10-year-11", "Grade 10 / Year 11"],
-  ["grade-11-year-12", "Grade 11 / Year 12"],
-  ["grade-12-year-13", "Grade 12 / Year 13"],
-] as const;
+import {
+  getGradeLabel,
+  gradeOptions,
+  type PathwayQuestion,
+} from "./pathway-form-questions";
+import { isResponseValid, profileRequirements } from "./pathway-validation";
 
 const optionIcons: Record<string, LucideIcon> = {
   "Events & experiences": Users,
@@ -161,21 +157,17 @@ export function ApplicantProfileStep({
     }
   }, [activeSchool, schoolOpen, schoolResults]);
 
-  const errorFor = (field: ProfileField) => {
-    if (!attempted) return "";
-    if (field === "fullName" && answers.fullName.trim().length < 2)
-      return "Enter your full name (at least 2 characters).";
-    if (
-      field === "email" &&
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(answers.email.trim())
-    )
-      return "Enter a valid email address.";
-    if (field === "school" && answers.school.trim().length < 2)
-      return "Choose or enter your school name.";
-    if (field === "grade" && !answers.grade)
-      return "Select your grade or academic year.";
-    return "";
+  const requirements = profileRequirements(answers);
+  const messages = {
+    fullName: "Enter your full name (at least 2 characters).",
+    email: "Enter a valid email address.",
+    school: "Choose or enter your school name.",
+    grade: "Select your grade or academic year.",
+    ageEligible: "Confirm that you meet the student eligibility requirements.",
   };
+  const errorFor = (field: ProfileField) =>
+    attempted && !requirements[field] ? messages[field] : "";
+  const grade = requirements.grade ? answers.grade : "";
 
   const chooseSchool = (name: string) => {
     update("school", name);
@@ -183,9 +175,7 @@ export function ApplicantProfileStep({
     setSchoolOpen(false);
   };
   const interestInvalid =
-    attempted &&
-    (!questionResponse ||
-      (Array.isArray(questionResponse) && questionResponse.length === 0));
+    attempted && !isResponseValid(question, questionResponse);
 
   return (
     <section className={styles.profile} aria-labelledby="profile-title">
@@ -353,9 +343,7 @@ export function ApplicantProfileStep({
               htmlFor="profile-grade"
               className={`astra-animated-label ${styles.gradeLabel}`}
               initial={false}
-              animate={
-                gradeOpen || gradeFocused || answers.grade ? "floated" : "rest"
-              }
+              animate={gradeOpen || gradeFocused || grade ? "floated" : "rest"}
               variants={profileLabelVariants}
               style={{ width: "max-content" }}
             >
@@ -371,7 +359,7 @@ export function ApplicantProfileStep({
               ))}
             </motion.label>
             <Select
-              value={answers.grade}
+              value={grade}
               onOpenChange={setGradeOpen}
               onValueChange={(value) => update("grade", value)}
             >
@@ -388,7 +376,7 @@ export function ApplicantProfileStep({
                 }
               >
                 <SelectValue placeholder="">
-                  {answers.grade ? getGradeLabel(answers.grade) : undefined}
+                  {grade ? getGradeLabel(grade) : undefined}
                 </SelectValue>
               </SelectTrigger>
               <SelectContent
@@ -429,7 +417,7 @@ export function ApplicantProfileStep({
             }
           />
           <label htmlFor="profile-eligibility">
-            I confirm that I am aged 13–18 and currently a student in Qatar.
+            I confirm that I am aged 14–18 and currently a student in Qatar.
           </label>
         </div>
         {attempted && !answers.ageEligible && (
@@ -438,7 +426,7 @@ export function ApplicantProfileStep({
             id="profile-eligibility-error"
             role="alert"
           >
-            Confirm that you meet the student eligibility requirements.
+            {errorFor("ageEligible")}
           </p>
         )}
       </div>
@@ -456,9 +444,13 @@ export function ApplicantProfileStep({
           {question.type === "textarea"
             ? null
             : question.options.map((option, index) => {
-                const selections = Array.isArray(questionResponse)
-                  ? questionResponse
-                  : [questionResponse ?? ""];
+                const rawSelections = (
+                  Array.isArray(questionResponse)
+                    ? questionResponse
+                    : [questionResponse ?? ""]
+                ).filter((value) => question.options.includes(value));
+                // Use stable reference for empty arrays to prevent infinite render loops
+                const selections = rawSelections.length === 0 ? EMPTY_ARRAY : rawSelections;
                 const selected = selections.includes(option);
                 const Icon = optionIcons[option] ?? Compass;
                 return (

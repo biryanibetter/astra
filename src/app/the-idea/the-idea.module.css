@@ -1,14 +1,38 @@
 /* biome-ignore-all lint/correctness/noUnknownPseudoClass: Next CSS Modules supports :global for route-scoped stage selectors. */
 .frame {
+  --idea-gutter: var(--container-padding);
+  --idea-frame-inset: calc(clamp(24px, 3vw, 32px) + 1px);
   position: relative;
   z-index: 1;
-  width: calc(100% - 2 * var(--container-padding));
+  width: calc(100% - 2 * var(--idea-gutter));
   max-width: var(--container-max);
   margin: clamp(156px, 17svh, 200px) auto 80px;
   /* Replace the old border's inset so the approved content edges do not move. */
-  padding: calc(clamp(24px, 3vw, 32px) + 1px);
+  padding: var(--idea-frame-inset);
   border-radius: 8px;
   color: var(--text-primary);
+}
+
+.pathwayTransition {
+  display: grid;
+  justify-items: center;
+  gap: clamp(8px, 1.4vw, 16px);
+  margin: clamp(26px, 3.8vw, 42px) 0 clamp(20px, 3vw, 32px);
+  text-align: center;
+}
+
+.pathwayTransition svg {
+  display: block;
+  width: min(80%, clamp(224px, 34.6vw, 346px));
+  height: auto;
+}
+
+.pathwayTransition p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: clamp(15px, 2.2vw, 22px);
+  line-height: 1.4;
+  text-wrap: balance;
 }
 
 /* The stage retains its native-scroll plateau and chapter controller, but its
@@ -36,7 +60,7 @@
   border-radius: 8px;
 }
 
-.frame :global([data-programs-stage]) :global([data-programs-composition]) h1 {
+.frame :global([data-programs-heading]) h2 {
   max-width: 100%;
 }
 
@@ -52,9 +76,9 @@
 
 @media (max-width: 560px) {
   .frame {
-    width: calc(100% - 2 * var(--container-padding-mobile));
+    --idea-gutter: var(--container-padding-mobile);
+    --idea-frame-inset: 13px;
     margin-top: 150px;
-    padding: 13px;
   }
 
   .frame :global([data-programs-stage]) :global([data-programs-composition]) {

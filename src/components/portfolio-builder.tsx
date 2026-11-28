@@ -93,16 +93,17 @@ function fileError(file: File) {
     return "Unsupported file type. Choose a PDF.";
   return undefined;
 }
-export function isPortfolioValid(value: PortfolioData) {
-  const hasValidProject = value.projects.some(
-    (p) => p.title.trim() || p.description.trim(),
-  );
-  const hasValidCV = value.cv.some(({ file, error }) => !error && file);
+export function hasValidCV(value: PortfolioData) {
   return (
-    hasValidProject &&
-    hasValidCV &&
-    value.cv.every(({ file, error }) => !error && !fileError(file)) &&
-    value.links.every(({ url }) => !validateLinkUrl(url))
+    value.cv.length > 0 &&
+    value.cv.every(({ file, error }) => !error && !fileError(file))
+  );
+}
+
+export function isPortfolioValid(value: PortfolioData) {
+  return (
+    (value.cv.length === 0 || hasValidCV(value)) &&
+    value.links.every(({ url }) => !url.trim() || !validateLinkUrl(url))
   );
 }
 
@@ -387,9 +388,13 @@ function ProjectsSection({
 function LinksSection({
   items,
   onChange,
+  onDraftInvalid,
+  attempted,
 }: {
   items: PortfolioLink[];
   onChange: (items: PortfolioLink[]) => void;
+  onDraftInvalid: (invalid: boolean) => void;
+  attempted: boolean;
 }) {
   const [editor, setEditor] = useState<{
     id: string;
@@ -399,6 +404,7 @@ function LinksSection({
   const [editorError, setEditorError] = useState("");
   const [confirming, setConfirming] = useState<string | null>(null);
   const addLock = useRef(false);
+  useEffect(() => () => onDraftInvalid(false), [onDraftInvalid]);
   useEffect(() => {
     if (!editor) return;
     document
@@ -430,10 +436,16 @@ function LinksSection({
   const patch = (updates: Partial<PortfolioLink>) => {
     setDraft((current) => (current ? { ...current, ...updates } : current));
     setEditorError("");
+    if (updates.url !== undefined) {
+      onDraftInvalid(
+        Boolean(updates.url.trim()) && Boolean(validateLinkUrl(updates.url)),
+      );
+    }
   };
   const remove = (itemId: string) => {
     onChange(items.filter((link) => link.id !== itemId));
     if (editor?.id === itemId) {
+      onDraftInvalid(false);
       setEditor(null);
       setDraft(null);
       setEditorError("");
@@ -447,6 +459,7 @@ function LinksSection({
     if (!editor) return;
     const { id: itemId, original } = editor;
     if (cancel) {
+      onDraftInvalid(false);
       setEditor(null);
       setDraft(null);
       setEditorError("");
@@ -464,6 +477,7 @@ function LinksSection({
       return;
     }
     const normalized = { ...draft, url: normalizeLinkUrl(draft.url) };
+    onDraftInvalid(false);
     if (original) {
       onChange(
         items.map((item) =>
@@ -490,7 +504,7 @@ function LinksSection({
     // Existing saved links surface a live error until their draft is valid,
     // while new drafts only show an error after an attempted save.
     const draftError =
-      editor?.original && draft
+      draft && (editor?.original || (attempted && draft.url.trim()))
         ? validateLinkUrl(draft.url)
         : editorError || undefined;
     return (
@@ -563,7 +577,9 @@ function LinksSection({
         </button>
       ) : (
         items.map((item, index) => {
-          const savedError = validateLinkUrl(item.url);
+          const savedError = item.url.trim()
+            ? validateLinkUrl(item.url)
+            : undefined;
           const open = editor?.id === item.id && editor.original !== null;
           const edit = () => {
             if (editor) {
@@ -677,6 +693,7 @@ function FileDrop({
   multiple,
   onFiles,
   onRemove,
+  missing,
 }: {
   title: string;
   hint: string;
@@ -684,6 +701,7 @@ function FileDrop({
   multiple?: boolean;
   onFiles: (files: FileList | null, replaceId?: string) => void;
   onRemove: (fileId: string) => void;
+  missing: boolean;
 }) {
   const input = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
@@ -701,16 +719,14 @@ function FileDrop({
   };
   return (
     <div className={styles.fileField}>
-      <h3>
-        {title} <span>{title === "CV" ? "(required)" : "(optional)"}</span>
-      </h3>
+      <h3>{title}</h3>
       <p className={styles.hint}>{hint}</p>
       <fieldset
         aria-label={`${title} file drop area`}
         tabIndex={-1}
-        aria-invalid={files.some(({ error }) => Boolean(error))}
+        aria-invalid={missing || files.some(({ error }) => Boolean(error))}
         aria-describedby={
-          files.some(({ error }) => Boolean(error))
+          missing || files.some(({ error }) => Boolean(error))
             ? "portfolio-cv-error"
             : undefined
         }
@@ -785,6 +801,11 @@ function FileDrop({
             : `Choose ${title === "CV" ? "CV" : title.toLowerCase()}`}
         </button>
       </fieldset>
+      {missing && (
+        <p id="portfolio-cv-error" className="field-error" role="alert">
+          Choose a PDF CV to continue.
+        </p>
+      )}
       {files.map(({ id: fileId, error }) =>
         error ? (
           <p
@@ -804,9 +825,15 @@ function FileDrop({
 export function PortfolioBuilder({
   value,
   onChange,
+  cvRequired,
+  attempted,
+  onLinkDraftInvalid,
 }: {
   value: PortfolioData;
   onChange: (value: PortfolioData) => void;
+  cvRequired: boolean;
+  attempted: boolean;
+  onLinkDraftInvalid: (invalid: boolean) => void;
 }) {
   const updateFiles = (
     field: "cv",
@@ -847,12 +874,18 @@ export function PortfolioBuilder({
         <h2 id="portfolio-title">Build your profile.</h2>
       </header>
       <ProjectsSection items={value.projects} onChange={updateProjects} />
-      <LinksSection items={value.links} onChange={updateLinks} />
+      <LinksSection
+        items={value.links}
+        onChange={updateLinks}
+        onDraftInvalid={onLinkDraftInvalid}
+        attempted={attempted}
+      />
       <div className={styles.filesGrid}>
         <FileDrop
           title="CV"
-          hint="PDF only, up to 5 MB. Required."
+          hint={`PDF only, up to 5 MB. ${cvRequired ? "Required" : "Optional"}.`}
           files={value.cv}
+          missing={attempted && cvRequired && value.cv.length === 0}
           onFiles={(files, replaceId) => updateFiles("cv", files, replaceId)}
           onRemove={(fileId) =>
             onChange({

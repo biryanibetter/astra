@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     template: "%s | ASTRA",
   },
   description:
-    "A student-led youth innovation network connecting curious, ambitious students aged 13–18 across schools in Qatar.",
+    "A student-led youth innovation network connecting curious, ambitious students aged 14–18 who are currently studying in Qatar.",
   openGraph: {
     type: "website",
     locale: "en_QA",

@@ -4,61 +4,70 @@ import { describe, expect, it } from "vitest";
 import { EventsTimeline } from "@/components/home/events";
 
 describe("experiences lane", () => {
-  it("preserves the content without buttons or placeholder navigation", () => {
+  it("associates the approved copy with each card without placeholder navigation", () => {
     const html = renderToStaticMarkup(createElement(EventsTimeline));
     const text = html
       .replace(/<[^>]*>/g, " ")
       .replaceAll("&#x27;", "'")
       .replaceAll("&amp;", "&")
       .replace(/\s+/g, " ");
+    expect(text).toContain("Creating opportunities. Connecting possibilities.");
     expect(text).toContain(
-      "Our experiences that bring Qatar's innovators together.",
+      "From cross-school gatherings to collaborative projects and conversations, Astra aims to create opportunities for students to connect, contribute and pursue their interests together.",
     );
-    expect(text).toContain(
-      "From large-scale events to intimate workshops, Astra creates experiences where ambitious students meet, learn and build.",
-    );
-    for (const title of [
-      "Astra Launch Night",
-      "Build & Learn",
-      "Real Conversations",
-      "Ideas in Action",
-    ]) {
-      expect(text).toContain(title);
-    }
     expect(html).not.toContain("<button");
     expect(html).not.toContain("<a ");
     expect(text).not.toContain("View all programs");
-    expect(text).toContain(
-      "Hands-on experiences in technology, AI, business, design and more.",
-    );
-    expect(text).toContain(
-      "A first gathering bringing ambitious young people across Qatar together.",
-    );
-    expect(text).toContain(
-      "Conversations with founders, industry leaders and creators.",
-    );
-    expect(text).toContain(
-      "Student projects, teams and ideas from across Qatar.",
-    );
-    expect(
-      text.match(
-        /A first gathering bringing ambitious young people across Qatar together\./g,
-      ),
-    ).toHaveLength(1);
-    const welcomeMatch = text.match(
-      /A welcoming first gathering for ambitious young people/g,
-    );
-    // Supporting copy stays mounted to prevent layout projection/remount jumps,
-    // but is hidden from assistive technology until its card is expanded.
-    expect(welcomeMatch ? welcomeMatch.length : 0).toBe(1);
+    expect(text).not.toContain("Astra Launch Night");
+
     const document = new DOMParser().parseFromString(html, "text/html");
-    const details = document.querySelectorAll("[data-experience-detail]");
-    expect(details).toHaveLength(4);
-    for (const detail of details) {
-      expect(detail.getAttribute("aria-hidden")).toBe("true");
-    }
+    const cards = [...document.querySelectorAll("article")];
+    expect(cards).toHaveLength(4);
+    const content = [
+      {
+        category: "Flagship Experiences",
+        title: "Events & Gatherings",
+        intro:
+          "Bringing students across schools together through shared experiences.",
+        detail:
+          "From youth festivals to cross-school gatherings, Astra aims to organize experiences where students can discover new interests, exchange perspectives and form meaningful connections beyond their schools.",
+      },
+      {
+        category: "Hands-on Experiences",
+        title: "Workshops & Hackathons",
+        intro:
+          "Collaborative challenges that bring different skills and ideas together.",
+        detail:
+          "Through interactive workshops, hackathons and team-based challenges, Astra aims to encourage students to experiment, solve problems and develop ideas alongside peers from different disciplines.",
+      },
+      {
+        category: "Speaker Sessions",
+        title: "Real Conversations",
+        intro:
+          "Conversations with founders, researchers, industry leaders and creators.",
+        detail:
+          "An opportunity to engage with people from different professional backgrounds, ask meaningful questions and gain perspectives that extend beyond conventional classroom learning.",
+      },
+      {
+        category: "Exhibitions & Competitions",
+        title: "Innovation Showcases",
+        intro:
+          "A platform for student research, inventions, projects and emerging ideas.",
+        detail:
+          "Astra aims to develop exhibitions and competitions where students can present their work, demonstrate their ideas, exchange constructive feedback and engage with a wider community of innovators.",
+      },
+    ];
+    const expected = cards.map((card) => ({
+      category:
+        card.querySelector("[data-experience-label]")?.textContent ?? "",
+      title: card.querySelector("strong")?.textContent ?? "",
+      intro: card.querySelector("[data-experience-intro]")?.textContent ?? "",
+      detail:
+        card.querySelector('[data-experience-detail][aria-hidden="true"]')
+          ?.textContent ?? "",
+    }));
+    expect(expected).toEqual(content);
     expect(html).toContain('id="events"');
-    expect((html.match(/<article\b/g) ?? []).length).toBe(4);
     expect(html).not.toContain('aria-haspopup="dialog"');
     expect(html).not.toContain('aria-label="Previous experience"');
     expect(html).not.toContain('aria-label="Next experience"');

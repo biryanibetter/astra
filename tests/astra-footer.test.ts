@@ -11,7 +11,7 @@ describe("AstraFooter", () => {
     expect(html).toContain("hwf-canonical");
     expect(html).toContain("hwf-fallback");
     expect(html).toContain("<canvas");
-    for (const href of ["/", "/the-idea", "/#schools-heading", "/whats-next"]) {
+    for (const href of ["/", "/the-idea", "/#schools-heading", "/#events"]) {
       expect(html).toContain(`href="${href}"`);
     }
     for (const heading of ["Explore", "Social", "Media"]) {

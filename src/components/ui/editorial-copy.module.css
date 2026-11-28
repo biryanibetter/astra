@@ -1,0 +1,24 @@
+.section {
+  padding-block: 120px var(--section-gap);
+}
+
+.section .text {
+  max-width: 980px;
+  color: var(--text-muted);
+  font-size: clamp(32px, 4.8vw, 62px);
+}
+
+.emphasis {
+  color: white;
+  font-weight: inherit;
+}
+
+@media (max-width: 700px) {
+  .section {
+    padding-block: 95px var(--section-gap-mobile);
+  }
+
+  .section .text {
+    font-size: clamp(32px, 5.6vw, 42px);
+  }
+}

@@ -2,7 +2,7 @@
 
 import { Check, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { useRef, useState } from "react";
+import { type CSSProperties, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useSmoothScroll } from "@/components/smooth-scroll-provider";
 import { Button } from "@/components/ui/button";
@@ -84,6 +84,7 @@ export interface ApplicationSteps {
   onDone: () => void | Promise<void>;
   onInvalid?: (step: number) => void;
   submitting: boolean;
+  initialStep?: number;
 }
 
 const OnboardingForm = ({
@@ -94,7 +95,8 @@ const OnboardingForm = ({
   const prefersReducedMotion = useSystemReducedMotion();
   const lenis = useSmoothScroll();
   const displayedSteps = application?.steps ?? steps;
-  const [currentStep, setCurrentStep] = useState(0);
+  const initialStep = application?.initialStep ?? 0;
+  const [currentStep, setCurrentStep] = useState(initialStep);
   const navigationRef = useRef({ step: 0, generation: 0 });
   const navigationGeneration = navigationRef.current.generation;
   const positionedNavigationRef = useRef(0);
@@ -107,6 +109,24 @@ const OnboardingForm = ({
       generation: navigationRef.current.generation + 1,
     };
     setCurrentStep(step);
+    // Immediately scroll to top of application card for stage transitions
+    if (application && lenis) {
+      const card = cardPositionRef.current;
+      if (card) {
+        const bounds = card.getBoundingClientRect();
+        const targetY = window.scrollY + bounds.top - 24;
+        lenis.scrollTo(Math.max(0, targetY), { immediate: true, force: true });
+        if (typeof window !== "undefined") {
+          window.scrollTo({ top: Math.max(0, targetY), left: 0, behavior: "instant" });
+        }
+      } else {
+        // Fallback: scroll to top if card ref not ready
+        lenis.scrollTo(0, { immediate: true, force: true });
+        if (typeof window !== "undefined") {
+          window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+        }
+      }
+    }
   };
   const timelineSteps = displayedSteps;
   const timelineCurrentStep = currentStep;
@@ -217,7 +237,17 @@ const OnboardingForm = ({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: application && prefersReducedMotion ? 0 : 0.5 }}
       >
-        <div className={application ? "astra-application-timeline" : undefined}>
+        <div
+          className={application ? "astra-application-timeline" : undefined}
+          style={
+            application
+              ? ({
+                  "--application-stage-count": displayedSteps.length,
+                  "--application-stage-inset": `${50 / displayedSteps.length}%`,
+                } as CSSProperties)
+              : undefined
+          }
+        >
           <div
             className={
               application ? "astra-step-grid" : "flex justify-between mb-2"
@@ -926,8 +956,10 @@ const OnboardingForm = ({
                   type="button"
                   variant="outline"
                   onClick={() => {
-                    if (isStepValid()) changeStep(displayedSteps.length - 1);
-                    else application.onInvalid?.(currentStep);
+                    if (!isStepValid()) application.onInvalid?.(currentStep);
+                    else if (isStepValid(displayedSteps.length - 1))
+                      changeStep(displayedSteps.length - 1);
+                    else nextStep();
                   }}
                 >
                   Review

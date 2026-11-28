@@ -128,7 +128,7 @@
   --application-description-gap: 8px;
   --application-control-gap: 16px;
   --application-feedback-gap: 8px;
-  --application-card-gap: 12px;
+  --application-card-gap: 14px;
   --application-card-height: 58px;
   --application-prompt-size: clamp(17px, 1.8vw, 19px);
   --application-prompt-color: #f5f6f8;
@@ -405,41 +405,14 @@
 .astra-multistep-form .question-options-single .interest-card-label {
   min-height: 64px;
 }
-@media (max-width: 900px) {
-  .astra-multistep-form {
-    --application-card-height: 54px;
-  }
-  .astra-multistep-form .question-options,
-  .astra-multistep-form .question-options-single {
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-  }
-  .astra-multistep-form .question-options > .interest-card {
-    grid-column: span 3;
-  }
-}
-/* Keep the final options together instead of leaving a lone tablet card.
-   Tablet-only: below 700px every card spans the full row, and this rule's
-   specificity would otherwise override that. */
-@media (min-width: 701px) and (max-width: 900px) {
+@media (max-width: 350px) {
   .astra-multistep-form
-    .question-options:not(.question-options-single)
-    > .interest-card:nth-child(n + 5),
-  .astra-multistep-form
-    .question-options-single
-    > .interest-card:nth-child(n + 3) {
-    grid-column: span 2;
-  }
-}
-@media (max-width: 700px) {
-  .astra-multistep-form {
-    --application-card-height: 48px;
-  }
-  .astra-multistep-form .question-options,
-  .astra-multistep-form .question-options-single {
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-  }
-  .astra-multistep-form .question-options > .interest-card:nth-child(n) {
-    grid-column: 1 / -1;
+    .astra-step-grid:has(.astra-step:nth-child(6))
+    .astra-step-label {
+    padding-inline: 1px;
+    font-size: 9px;
+    letter-spacing: 0;
+    white-space: nowrap;
   }
 }
 .astra-multistep-form .interest-card:hover {
@@ -493,6 +466,7 @@
   color: inherit;
   line-height: 1.4;
   overflow-wrap: anywhere;
+  word-break: normal;
 }
 .astra-multistep-form .interest-card.is-selected .interest-card-text {
   color: #c6ccd5;
@@ -558,7 +532,7 @@
 }
 .astra-multistep-form .astra-step-grid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(var(--application-stage-count), minmax(0, 1fr));
   gap: 0;
   margin-bottom: 10px;
   position: relative;
@@ -1041,6 +1015,198 @@
   line-height: 1.5;
 }
 
+/* Word count display */
+.astra-multistep-form .word-count {
+  margin: var(--application-feedback-gap) 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: right;
+  transition: color 180ms ease;
+}
+
+/* Custom textarea scrollbar */
+.astra-multistep-form .field textarea {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(198, 204, 213, 0.3) transparent;
+}
+.astra-multistep-form .field textarea::-webkit-scrollbar {
+  width: 8px;
+}
+.astra-multistep-form .field textarea::-webkit-scrollbar-track {
+  background: transparent;
+}
+.astra-multistep-form .field textarea::-webkit-scrollbar-thumb {
+  background: rgba(198, 204, 213, 0.3);
+  border-radius: 4px;
+}
+.astra-multistep-form .field textarea::-webkit-scrollbar-thumb:hover {
+  background: rgba(198, 204, 213, 0.5);
+}
+
+/* Vertical select rows for long-answer single-select questions - match horizontal interest-card styling */
+.astra-multistep-form .question-options-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+}
+.astra-multistep-form .vertical-select-row {
+  position: relative;
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  align-items: center;
+  gap: 12px;
+  /* Remove padding from row - label will have padding like horizontal cards */
+  padding: 0;
+  min-height: 56px;
+  border: 1px solid rgba(220, 226, 234, 0.18);
+  background: rgba(5, 6, 7, 0.8);
+  backdrop-filter: blur(12px);
+  border-radius: 8px;
+  overflow: hidden;
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease,
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+.astra-multistep-form .vertical-select-label {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 12px;
+  /* Match horizontal interest-card-label padding */
+  padding: 8px 28px 8px 12px;
+  margin: 0;
+  min-height: 56px;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: #e8ecf1;
+  cursor: pointer;
+  transition:
+    background 180ms ease,
+    color 180ms ease;
+}
+.astra-multistep-form .vertical-select-row:hover {
+  border-color: rgba(220, 226, 234, 0.48);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+.astra-multistep-form .vertical-select-row:hover .vertical-select-label {
+  background: rgba(198, 204, 213, 0.08);
+  color: #fff;
+}
+.astra-multistep-form .vertical-select-row.is-selected {
+  border-color: rgba(220, 226, 234, 0.7);
+  background: linear-gradient(
+    135deg,
+    rgba(198, 204, 213, 0.12),
+    rgba(5, 6, 7, 0.9)
+  );
+  box-shadow:
+    0 0 0 1px rgba(220, 226, 234, 0.15),
+    0 4px 16px rgba(198, 204, 213, 0.08);
+}
+.astra-multistep-form .vertical-select-row.is-selected .vertical-select-label {
+  color: #fff;
+}
+.astra-multistep-form .vertical-select-row:focus-within {
+  outline: 2px solid #c6ccd5;
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+.astra-multistep-form .vertical-select-label input {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.astra-multistep-form .vertical-select-row .interest-card-icon {
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+  color: #9ca4b0;
+  transition: color 180ms ease;
+}
+.astra-multistep-form .vertical-select-row.is-selected .interest-card-icon,
+.astra-multistep-form .vertical-select-row:hover .interest-card-icon {
+  color: #c6ccd5;
+}
+.astra-multistep-form .vertical-select-row .interest-card-text {
+  flex: 1;
+  min-width: 0;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: inherit;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+.astra-multistep-form .vertical-select-row.is-selected .interest-card-text {
+  color: #c6ccd5;
+}
+.astra-multistep-form .vertical-select-row .interest-card-check {
+  position: absolute;
+  top: 50%;
+  /* Match horizontal card check position (right: 8px) with label padding-right: 28px */
+  right: 8px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid rgba(220, 226, 234, 0.3);
+  border-radius: 4px;
+  color: transparent;
+  transform: translateY(-50%);
+  transition:
+    border-color 180ms ease,
+    background 180ms ease,
+    color 180ms ease,
+    transform 150ms ease;
+}
+.astra-multistep-form .vertical-select-row.is-selected .interest-card-check {
+  border-color: #c6ccd5;
+  background: #c6ccd5;
+  color: #08090b;
+  transform: translateY(-50%) scale(1);
+}
+
+/* Improved responsive breakpoints for multi-select cards */
+@media (max-width: 900px) {
+  .astra-multistep-form {
+    --application-card-height: 54px;
+  }
+  .astra-multistep-form .question-options {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .astra-multistep-form .question-options-single {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .astra-multistep-form .question-options > .interest-card {
+    grid-column: span 1;
+  }
+}
+@media (max-width: 700px) {
+  .astra-multistep-form {
+    --application-card-height: 48px;
+  }
+  .astra-multistep-form .question-options,
+  .astra-multistep-form .question-options-single {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .astra-multistep-form .question-options > .interest-card:nth-child(n),
+  .astra-multistep-form .question-options-single > .interest-card:nth-child(n) {
+    grid-column: 1 / -1;
+  }
+}
+
 /* Keep introduction control geometry without replacing the shared material. */
 .astra-multistep-form
   [data-application-card]
@@ -1279,7 +1445,6 @@
   .astra-multistep-form .astra-step-grid {
     position: relative;
     z-index: 1;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
     grid-template-rows: minmax(52px, auto);
     column-gap: 0;
     margin-bottom: 10px;
@@ -1298,8 +1463,8 @@
   }
   .astra-multistep-form .astra-application-timeline [role="progressbar"] {
     position: absolute;
-    inset: 8px 10% auto;
-    width: 80%;
+    inset: 8px var(--application-stage-inset) auto;
+    width: auto;
     height: 1px;
     margin: 0;
     padding: 0;
@@ -1369,5 +1534,191 @@
   .astra-multistep-form [data-application-card] .pathway-start-button {
     min-height: 48px;
     padding-inline: 18px;
+  }
+}
+
+.pathway-commitments {
+  min-inline-size: 0;
+  padding: 0;
+  border: 0;
+}
+.commitments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.commitment-row {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  cursor: pointer;
+}
+.commitment-input {
+  position: absolute;
+  inset-block-start: 2px;
+  inset-inline-start: 0;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+.commitment-indicator {
+  display: grid;
+  place-items: center;
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  border: 1.5px solid rgba(220, 226, 234, 0.3);
+  border-radius: 4px;
+  color: transparent;
+  pointer-events: none;
+}
+.commitment-input:checked + .commitment-indicator {
+  border-color: #c6ccd5;
+  background: #c6ccd5;
+  color: #08090b;
+}
+.commitment-input:focus-visible + .commitment-indicator {
+  outline: 2px solid #c6ccd5;
+  outline-offset: 3px;
+}
+@media (forced-colors: active) {
+  .commitment-indicator {
+    forced-color-adjust: none;
+    border-color: ButtonText;
+  }
+  .commitment-input:checked + .commitment-indicator {
+    border-color: Highlight;
+    background: Highlight;
+    color: HighlightText;
+  }
+  .commitment-input:focus-visible + .commitment-indicator {
+    outline-color: Highlight;
+  }
+}
+.commitment-text {
+  min-width: 0;
+  color: #eef1f5;
+  font-size: 15px;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+.commitments-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 26px;
+}
+.commitments-count {
+  color: #c6ccd5;
+  font-size: 13px;
+  font-weight: 500;
+}
+.commitments-toggle {
+  min-height: 44px;
+  padding-inline: 20px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.commitments-toggle:focus-visible {
+  outline: 2px solid #f5f6f8;
+  outline-offset: 3px;
+}
+.pathway-confirmation {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  padding: clamp(40px, 8vw, 72px) 24px;
+  text-align: center;
+}
+.pathway-confirmation h2 {
+  margin: 0;
+  color: #f7f8fa;
+  font-size: clamp(34px, 6vw, 52px);
+  line-height: 1.1;
+}
+.astra-application-panel .pathway-confirmation p {
+  margin: 0;
+  color: #c6ccd5;
+}
+.pathway-confirmation .pathway-confirmation-preview {
+  color: #aeb6c1;
+  font-size: 12px;
+}
+.pathway-confirmation-icon {
+  display: grid;
+  width: 92px;
+  aspect-ratio: 1;
+  place-items: center;
+  margin-bottom: 8px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  background: #12291d;
+  color: #4acb7d;
+  box-shadow: 0 0 0 7px #4acb7d18;
+}
+.pathway-confirmation-icon.pathway-confirmation-error {
+  background: #291212;
+  color: #f05252;
+  box-shadow: 0 0 0 7px #f0525218;
+}
+.pathway-confirmation .pathway-confirmation-icon svg {
+  width: 48px;
+}
+.pathway-confirmation-icon path {
+  stroke-dasharray: 1;
+  animation: pathway-confirmation-check 460ms ease-out both;
+}
+.pathway-confirmation-error circle,
+.pathway-confirmation-error path {
+  animation: pathway-confirmation-error 460ms ease-out both;
+}
+@keyframes pathway-confirmation-error {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.pathway-confirmation-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+  width: 100%;
+  max-width: 280px;
+}
+.pathway-confirmation-actions .shiny-button {
+  width: 100%;
+}
+.pathway-confirmation-secondary {
+  width: 100%;
+  justify-content: center;
+}
+.pathway-application .astra-application-panel .pathway-confirmation button {
+  margin-top: 16px;
+}
+@keyframes pathway-confirmation-check {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pathway-confirmation-icon path,
+  .pathway-confirmation-icon circle,
+  .pathway-confirmation-error path {
+    animation: none;
   }
 }

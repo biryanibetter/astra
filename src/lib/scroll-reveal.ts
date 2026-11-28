@@ -17,13 +17,17 @@ export function installScrollReveals(_root: ParentNode): () => void {
       const hold = runtime.pending.get(element);
       if (!hold) continue;
       const box = element.getBoundingClientRect();
+      const editorial = element.dataset.reveal === "words";
       // A jump into/past a surface exposes it immediately; no blank fast-scroll
       // viewport and no delayed entrance queue.
       if (
         box.top < 0 ||
         box.bottom <= 0 ||
-        box.top < innerHeight - Math.min(box.height * 0.5, 180) ||
+        (box.top < innerHeight - Math.min(box.height * 0.5, 180) &&
+          !(editorial && scrollY === 0)) ||
         concurrent >= 4 ||
+        (element.hasAttribute("data-reveal-respect-motion") &&
+          window.matchMedia("(prefers-reduced-motion: reduce)").matches) ||
         element.contains(document.activeElement) ||
         element.matches(":hover")
       )
@@ -46,7 +50,7 @@ export function installScrollReveals(_root: ParentNode): () => void {
       }));
       const css = getComputedStyle(element);
       const base = css.transform;
-      const controls: ReturnType<typeof animate>[] = [];
+      const controls: (ReturnType<typeof animate> | Animation)[] = [];
       let finished = false;
       const finish = () => {
         if (finished) return;
@@ -64,6 +68,11 @@ export function installScrollReveals(_root: ParentNode): () => void {
         hold.cancel();
         runtime.pending.delete(element);
         const opacity = Number.parseFloat(getComputedStyle(element).opacity);
+        const words = editorial
+          ? Array.from(
+              element.querySelectorAll<HTMLElement>("[data-reveal-word]"),
+            )
+          : [];
         const translate = heading ? 24 : image ? 24 : 28;
         const scale = image ? 0.99 : !heading && panel ? 0.985 : 1;
         const transform =
@@ -88,22 +97,43 @@ export function installScrollReveals(_root: ParentNode): () => void {
         };
         // Retain each property's control immediately: native startup for a later
         // property may throw, and must not orphan an earlier running animation.
-        controls.push(
-          animate(
-            element,
-            { opacity: [0, Number.isFinite(opacity) ? opacity : 1] },
-            transition,
-          ),
-        );
-        if (transform)
-          controls.push(animate(element, { transform }, transition));
+        if (words.length > 0) {
+          words.forEach((word, wordIndex) => {
+            controls.push(
+              word.animate(
+                {
+                  opacity: [0, 1],
+                  transform: ["translateY(12px)", "translateY(0px)"],
+                },
+                {
+                  duration: transition.duration * 1000,
+                  easing: `cubic-bezier(${transition.ease.join(",")})`,
+                  delay: (wordIndex / words.length) * 280,
+                  fill: "both",
+                },
+              ),
+            );
+          });
+        } else {
+          controls.push(
+            animate(
+              element,
+              { opacity: [0, Number.isFinite(opacity) ? opacity : 1] },
+              transition,
+            ),
+          );
+          if (transform)
+            controls.push(animate(element, { transform }, transition));
+        }
         runtime.active.set(element, finish);
         concurrent++;
         let remaining = controls.length;
-        for (const control of controls)
-          control.then(() => {
+        for (const control of controls) {
+          const completed = "finished" in control ? control.finished : control;
+          completed.then(() => {
             if (--remaining === 0) finish();
           }, finish);
+        }
       } catch {
         finish();
       }

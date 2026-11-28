@@ -1,27 +1,24 @@
 "use client";
 
-import { ArrowUpRight, FileText, Pencil } from "lucide-react";
+import { ArrowUpRight, Check, FileText, Pencil } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
+import { ShinyPerimeter } from "@/components/ui/shiny-button";
 import { useReducedMotion } from "@/lib/motion-preference";
-import type { Pathway } from "./pathway-questions";
-import { pathwayQuestions } from "./pathway-questions";
-import type { PortfolioData } from "./portfolio-builder";
+import {
+  coreCommitments,
+  type Pathway,
+  pathwayQuestions,
+} from "./pathway-form-questions";
+import type { PathwayAnswers } from "./pathway-validation";
+import { isValidHttpUrl, type PortfolioData } from "./portfolio-builder";
 import styles from "./review-step.module.css";
 import { formatFileSize, formatGrade } from "./review-step-format";
 
-type ReviewAnswers = {
-  fullName: string;
-  email: string;
-  school: string;
-  grade: string;
-  questionResponses: Record<string, string | string[]>;
-  ageEligible: boolean;
-};
-
 type ReviewStepProps = {
   track: Pathway;
-  answers: ReviewAnswers;
+  answers: Omit<PathwayAnswers, "portfolio">;
   portfolio: PortfolioData;
+  completion: { completed: number; total: number; percentage: number };
   onEdit: (step: number) => void;
 };
 
@@ -106,18 +103,11 @@ function Response({
   );
 }
 
-function isSafeLink(value: string) {
-  try {
-    return ["http:", "https:"].includes(new URL(value.trim()).protocol);
-  } catch {
-    return false;
-  }
-}
-
 export function ReviewStep({
   track,
   answers,
   portfolio,
+  completion,
   onEdit,
 }: ReviewStepProps) {
   const reduceMotion = useReducedMotion() ?? false;
@@ -131,19 +121,7 @@ export function ReviewStep({
     Array.isArray(value)
       ? value.length > 0
       : typeof value === "string" && Boolean(value.trim());
-  const completed = [
-    answers.fullName.trim(),
-    answers.email.trim(),
-    answers.school.trim(),
-    answers.grade,
-    answers.ageEligible,
-    isAnswered(responseFor(0)),
-    ...questions.slice(1).map((_, index) => isAnswered(responseFor(index + 1))),
-    portfolio.projects.some((p) => p.title.trim() || p.description.trim()),
-    portfolio.cv.some(({ file, error }) => !error && file),
-  ].filter(Boolean).length;
-  const total = track === "core" ? 14 : 13;
-  const percentage = Math.round((completed / total) * 100);
+  const { completed, total, percentage } = completion;
   const name = answers.fullName.trim() || "Your application";
   const initials = answers.fullName
     .trim()
@@ -163,11 +141,15 @@ export function ReviewStep({
       ? [firstResponse]
       : [];
   const projectAndExperience = [
-    ...portfolio.projects.map((item) => ({ ...item, kind: "Project" })),
+    ...portfolio.projects.filter(
+      ({ title, description }) => title.trim() || description.trim(),
+    ),
   ];
   const supportingFiles = [
     ...portfolio.cv.map((item) => ({ ...item, kind: "CV" })),
   ];
+
+  const isComplete = completed === total;
 
   return (
     <motion.div
@@ -176,7 +158,11 @@ export function ReviewStep({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: reduceMotion ? 0 : 0.28, ease: "easeOut" }}
     >
-      <header className={styles.overview}>
+      <header
+        className={`${styles.overview} ${isComplete ? styles.overviewComplete : ""}`}
+      >
+        {/* Animated glass border - runs even with reduced-motion preference per design requirements */}
+        {isComplete && <ShinyPerimeter />}
         <div className={styles.overviewIdentity}>
           <div className={styles.avatar} aria-hidden="true">
             {initials || "A"}
@@ -191,6 +177,7 @@ export function ReviewStep({
         </div>
         <div
           className={styles.completeness}
+          data-complete={completed === total}
           role="status"
           aria-label={`${completed} of ${total} required items complete`}
         >
@@ -227,7 +214,9 @@ export function ReviewStep({
             <Fact label="School">{answers.school}</Fact>
             <Fact label="Grade / year">{formatGrade(answers.grade)}</Fact>
             <Fact label="Student eligibility">
-              {answers.ageEligible ? "Confirmed" : "Not confirmed"}
+              {answers.ageEligible
+                ? "Confirmed: aged 14–18 and currently a student in Qatar"
+                : "Not confirmed"}
             </Fact>
           </dl>
         </ReviewSection>
@@ -272,10 +261,7 @@ export function ReviewStep({
           <div className={styles.responseList}>
             {projectAndExperience.length ? (
               projectAndExperience.map((item) => (
-                <article
-                  className={styles.response}
-                  key={`${item.kind}-${item.id}`}
-                >
+                <article className={styles.response} key={item.id}>
                   <h4>{item.title || "Untitled"}</h4>
                   <p>{item.description || "No description provided."}</p>
                 </article>
@@ -290,7 +276,7 @@ export function ReviewStep({
           <div className={styles.responseList}>
             {portfolio.links.some((link) => link.url.trim()) ? (
               portfolio.links.map((link) =>
-                isSafeLink(link.url) ? (
+                isValidHttpUrl(link.url) ? (
                   <a
                     className={styles.projectLink}
                     href={link.url}
@@ -351,6 +337,39 @@ export function ReviewStep({
             </button>
           </div>
         </ReviewSection>
+        {track === "core" && (
+          <ReviewSection
+            title="Membership Commitments"
+            step={4}
+            onEdit={onEdit}
+          >
+            <div className={styles.commitmentsReview}>
+              <div className={styles.commitmentsSummary}>
+                {Object.values(answers.commitments || {}).filter(Boolean).length}
+                {" "}
+                of {coreCommitments.length} acknowledged
+              </div>
+              <div className={styles.commitmentsList}>
+                {coreCommitments.map(({ id, text }) => (
+                  <div key={id} className={styles.commitmentRow}>
+                    <span className={styles.commitmentIcon} aria-hidden="true">
+                      {answers.commitments?.[id] === true ? (
+                        <Check
+                          className={styles.commitmentCheck}
+                          size={16}
+                          strokeWidth={2.5}
+                        />
+                      ) : (
+                        <span className={styles.commitmentDash} aria-hidden="true" />
+                      )}
+                    </span>
+                    <span className={styles.commitmentLabel}>{text}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </ReviewSection>
+        )}
       </div>
     </motion.div>
   );
